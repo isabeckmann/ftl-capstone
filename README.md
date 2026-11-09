@@ -30,8 +30,8 @@ Não é um sistema de alerta em produção.
 
 **Os dados não são versionados** (`data/` está no `.gitignore`). Para reproduzir, baixe-os conforme a seção 5 e registre a data do download:
 
-- ANA (telemetria): baixado em `[preencher]`.
-- NASA IMERG: baixado em `[preencher]`; cite a referência oficial da página do produto no GES DISC.
+- ANA (telemetria)
+- NASA IMERG
 
 ### Pontos de qualidade dos dados
 
