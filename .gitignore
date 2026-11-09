@@ -1,0 +1,14 @@
+.ipynb_checkpoints/
+__pycache__/
+*.tif
+*.zip
+Miniforge3-Linux-x86_64.sh
+
+# dados e artefatos pesados
+data/raw/
+data/processed/
+outputs/models/
+outputs/preds/
+
+.env
+*.pyc

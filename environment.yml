@@ -1,0 +1,25 @@
+name: capstone
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - numpy
+  - pandas
+  - scipy
+  - scikit-learn
+  - matplotlib
+  - pyarrow
+  - pytorch
+  - jupyterlab
+  - ipykernel
+  - geopandas
+  - rasterio
+  - rioxarray
+  - xarray
+  - netcdf4
+  - h5netcdf
+  - requests
+  - python-dotenv
+  - pip
+  - pip:
+      - earthaccess
