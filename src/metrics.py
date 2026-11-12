@@ -5,26 +5,35 @@ import numpy as np
 import pandas as pd
 
 
+def _valid(*arrs):
+    """Mantém só as posições em que todos os vetores são finitos (o teste pode ter horizontes sem observação)."""
+    arrs = [np.asarray(a, float) for a in arrs]
+    ok = np.logical_and.reduce([np.isfinite(a) for a in arrs])
+    return [a[ok] for a in arrs]
+
+
 def rmse(obs, pred) -> float:
-    obs, pred = np.asarray(obs, float), np.asarray(pred, float)
-    return float(np.sqrt(np.mean((obs - pred) ** 2)))
+    obs, pred = _valid(obs, pred)
+    return float(np.sqrt(np.mean((obs - pred) ** 2))) if len(obs) else float("nan")
 
 
 def mae(obs, pred) -> float:
-    return float(np.mean(np.abs(np.asarray(obs, float) - np.asarray(pred, float))))
+    obs, pred = _valid(obs, pred)
+    return float(np.mean(np.abs(obs - pred))) if len(obs) else float("nan")
 
 
 def nse(obs, pred) -> float:
     """Eficiência de Nash-Sutcliffe: 1 = perfeito; 0 = tão bom quanto a média observada."""
-    obs, pred = np.asarray(obs, float), np.asarray(pred, float)
-    den = np.sum((obs - obs.mean()) ** 2)
+    obs, pred = _valid(obs, pred)
+    den = np.sum((obs - obs.mean()) ** 2) if len(obs) else 0
     return float("nan") if den == 0 else float(1 - np.sum((obs - pred) ** 2) / den)
 
 
 def skill_vs_persistence(obs, pred, persist) -> float:
     """1 - MSE(modelo)/MSE(persistência). > 0 = melhor que repetir a cota atual."""
-    mse_m = np.mean((np.asarray(obs, float) - np.asarray(pred, float)) ** 2)
-    mse_p = np.mean((np.asarray(obs, float) - np.asarray(persist, float)) ** 2)
+    obs, pred, persist = _valid(obs, pred, persist)
+    mse_m = np.mean((obs - pred) ** 2) if len(obs) else np.nan
+    mse_p = np.mean((obs - persist) ** 2) if len(obs) else 0
     return float("nan") if mse_p == 0 else float(1 - mse_m / mse_p)
 
 
@@ -33,8 +42,8 @@ def summary_table(obs_abs: np.ndarray, pred_abs: np.ndarray, base: np.ndarray, h
     rows = []
     for j, h in enumerate(horizons):
         o, p = obs_abs[:, j], pred_abs[:, j]
-        rows.append({"horizonte_h": h, "RMSE_cm": rmse(o, p), "MAE_cm": mae(o, p), "NSE": nse(o, p),
-                     "skill_vs_persist": skill_vs_persistence(o, p, base)})
+        rows.append({"horizonte_h": h, "n": int(np.isfinite(o).sum()), "RMSE_cm": rmse(o, p), "MAE_cm": mae(o, p),
+                     "NSE": nse(o, p), "skill_vs_persist": skill_vs_persistence(o, p, base)})
     return pd.DataFrame(rows).set_index("horizonte_h").round(3)
 
 
