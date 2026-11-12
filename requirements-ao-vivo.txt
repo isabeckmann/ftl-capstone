@@ -1,0 +1,10 @@
+# Dependências da rotina ao vivo (GitHub Actions). Versões iguais às do ambiente onde o modelo foi treinado:
+# o modelo salvo (operacional/modelo_hgb.joblib) depende da versão do scikit-learn.
+numpy==2.4.6
+pandas==3.1.1
+scikit-learn==1.9.1
+joblib==1.6.0
+requests==2.34.2
+xarray==2026.9.0
+h5py==3.16.0
+python-dotenv

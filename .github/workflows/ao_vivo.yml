@@ -1,0 +1,63 @@
+# Previsão ao vivo da cota do Taquari: roda de hora em hora, grava agora.json e previsoes.csv no branch "dados".
+# O site lê https://raw.githubusercontent.com/<dono>/<repo>/dados/agora.json (não precisa refazer o deploy).
+#
+# Secrets necessários (Settings > Secrets and variables > Actions):
+#   ANA_ID, ANA_SENHA                 login do HidroWebService da ANA
+#   EARTHDATA_USER, EARTHDATA_PASS    login do NASA Earthdata (IMERG Early)
+name: ao-vivo
+
+on:
+  schedule:
+    - cron: "17 * * * *"        # minuto 17 de cada hora (UTC); o GitHub pode atrasar alguns minutos
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ao-vivo
+  cancel-in-progress: false
+
+jobs:
+  prever:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/checkout@v4
+        with:
+          ref: dados
+          path: dados
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-ao-vivo.txt
+
+      - run: pip install -r requirements-ao-vivo.txt
+
+      - name: Credenciais do Earthdata
+        env:
+          EARTHDATA_USER: ${{ secrets.EARTHDATA_USER }}
+          EARTHDATA_PASS: ${{ secrets.EARTHDATA_PASS }}
+        run: |
+          umask 077
+          printf 'machine urs.earthdata.nasa.gov login %s password %s\n' "$EARTHDATA_USER" "$EARTHDATA_PASS" > ~/.netrc
+
+      - name: Previsão
+        env:
+          ANA_ID: ${{ secrets.ANA_ID }}
+          ANA_SENHA: ${{ secrets.ANA_SENHA }}
+        run: python -m src.ao_vivo --saida dados/agora.json --historico dados/previsoes.csv
+
+      - name: Publicar no branch dados
+        working-directory: dados
+        run: |
+          git config user.name "ao-vivo[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add agora.json previsoes.csv
+          git diff --cached --quiet && exit 0
+          git commit -q -m "dados: $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -q origin HEAD:dados

@@ -159,6 +159,18 @@ def to_hourly(df: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(agg)
 
 
+def panel_from_frames(frames: dict) -> pd.DataFrame:
+    """Painel horário a partir de DataFrames já padronizados {codigo: df com cota_cm/chuva_mm} (uso ao vivo)."""
+    cols = []
+    for code, df in frames.items():
+        h = to_hourly(df)
+        h.columns = [f"{c.split('_')[0]}_{code}" for c in h.columns]
+        cols.append(h)
+    panel = pd.concat(cols, axis=1).sort_index()
+    full = pd.date_range(panel.index.min().floor("h"), panel.index.max().floor("h"), freq="1h")
+    return panel.reindex(full)
+
+
 def build_panel(raw_dir=None, stations=None, **kw) -> pd.DataFrame:
     """Painel horário com colunas cota_<codigo> e chuva_<codigo> (estações sem arquivo são ignoradas)."""
     stations = stations or config.STATIONS

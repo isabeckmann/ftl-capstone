@@ -37,6 +37,14 @@ EVENTS = {
 
 ALERT_LEVEL_CM = {"86510000": None, "86720000": None}
 
+# Faixas do SACE/SGB (cm), mostradas no painel ao vivo. Muçum: artigo do SGB (cotas do SACE, mar/2024).
+# Encantado: as fontes divergem (15 m em boletim de 2025, 12 m em notícias de 2026), provavelmente pela mudança de
+# régua depois de 2024 -> fica vazio até confirmar no último boletim do SACE.
+COTAS_REFERENCIA = {
+    "86510000": {"atencao": 500, "alerta": 900, "inundacao": 1800, "fonte": "SGB/SACE Taquari (mar/2024)"},
+    "86720000": None,
+}
+
 # Features / sequências
 LAGS = (1, 3, 6, 12, 24)          # variações da cota em t - lag
 RAIN_WINDOWS = (6, 12, 24, 48)    # acumulados de chuva (h)
@@ -52,3 +60,5 @@ IMERG_PRODUTO = "early"
 IMERG_LATENCIA_H = 6              # horas entre o fim da hora observada e o dado estar disponível
 LOCAL_UTC_OFFSET_HOURS = -3.0     # painel em horário local (UTC-3)  
 
+# JSON da rotina ao vivo (GitHub Actions grava no branch "dados"; o site lê daqui)
+AO_VIVO_URL = "https://raw.githubusercontent.com/isabeckmann/ftl-capstone/dados/agora.json"
