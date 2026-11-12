@@ -3,6 +3,7 @@ __pycache__/
 *.tif
 *.zip
 Miniforge3-Linux-x86_64.sh
+docs
 
 # dados e artefatos pesados
 data/raw/
@@ -12,3 +13,6 @@ outputs/preds/
 
 .env
 *.pyc
+
+# gerado pela rotina ao vivo (o site lê do branch "dados")
+web/agora.json
