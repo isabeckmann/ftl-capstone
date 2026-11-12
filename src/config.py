@@ -20,7 +20,7 @@ STATIONS = {
 }
 TARGETS = [c for c, v in STATIONS.items() if v["papel"] == "alvo"]
 
-HORIZONS = [6, 12, 24]
+HORIZONS = [6, 8, 12]
 
 UTC_OFFSET_HOURS = 0
 COTA_SCALE = 1.0
