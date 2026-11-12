@@ -9,8 +9,9 @@ Uso (no terminal, na raiz do projeto, com o ambiente `capstone` ativo):
     # 1) baixar e guardar as grades (retomável: se interromper, rode de novo)
     python -m src.imerg --start 2015-01-01 --end 2026-06-30
 
-    # 2) gerar o CSV com a média sobre a bacia, quando tiver o polígono (sem baixar nada)
-    python -m src.imerg --series-only --basin data/raw/bacia_taquari_antas.gpkg
+    # 2) gerar o CSV com a média sobre a área a montante de uma estação (sem baixar nada)
+    python -m src.basin          # cria data/processed/bacias_estacoes.gpkg (HydroBASINS)
+    python -m src.imerg --series-only --basin data/processed/bacias_estacoes.gpkg --station 86720000
 
 Saídas:
     data/processed/imerg_caixa/imerg_AAAA-MM.nc   grades recortadas (mm/dia)
@@ -41,11 +42,17 @@ OUT_CSV = config.PROCESSED / "chuva_bacia_diaria.csv"
 
 
 # ----------------------------------------------------------------------------- leitura / recorte
-def load_basin_geometry(path):
-    """Lê um polígono (gpkg/geojson/shp) e devolve uma geometria única em EPSG:4326."""
+def load_basin_geometry(path, station: str | None = None):
+    """Lê um polígono (gpkg/geojson/shp) e devolve uma geometria única em EPSG:4326.
+
+    Com `station`, usa só a linha cuja coluna `codigo` é essa estação (arquivo gerado por src.basin)."""
     import geopandas as gpd
 
     g = gpd.read_file(path).to_crs(4326)
+    if station is not None:
+        g = g[g["codigo"].astype(str) == str(station)]
+        if g.empty:
+            raise ValueError(f"Estação {station} não encontrada em {path}")
     return g.union_all() if hasattr(g, "union_all") else g.unary_union
 
 
@@ -199,10 +206,11 @@ if __name__ == "__main__":
     ap.add_argument("--start")
     ap.add_argument("--end")
     ap.add_argument("--basin", default=None, help="polígono da bacia (gpkg/geojson/shp)")
+    ap.add_argument("--station", default=None, help="código da estação dentro do --basin (coluna 'codigo')")
     ap.add_argument("--series-only", action="store_true", help="não baixa; só recalcula o CSV a partir das grades")
     ap.add_argument("--keep-raw", action="store_true")
     a = ap.parse_args()
-    geom = load_basin_geometry(a.basin) if a.basin else None
+    geom = load_basin_geometry(a.basin, a.station) if a.basin else None
     if geom is None:
         print("AVISO: sem --basin; usando a caixa retangular BBOX (média diluída, só para testes).")
     if a.series_only:
