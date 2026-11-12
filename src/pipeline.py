@@ -10,8 +10,11 @@ from .features import Prepared
 
 
 def use_imerg() -> bool:
-    """True se o IMERG entra como feature (config.USE_IMERG = True ou variável CAPSTONE_IMERG=1)."""
-    return os.environ.get("CAPSTONE_IMERG") == "1" or bool(getattr(config, "USE_IMERG", False))
+    """True se o IMERG entra como feature. A variável CAPSTONE_IMERG (1/0) tem prioridade sobre config.USE_IMERG."""
+    env = os.environ.get("CAPSTONE_IMERG")
+    if env in ("0", "1"):
+        return env == "1"
+    return bool(getattr(config, "USE_IMERG", False))
 
 
 def current_tag() -> str:
@@ -29,7 +32,10 @@ def load_panel() -> pd.DataFrame:
     panel = data.clean_panel(pd.read_parquet(config.PROCESSED / "panel_hourly.parquet"))
     panel = data.add_basin_rain(panel)                 # chuva horária da bacia, se existir (opcional)
     if use_imerg():
-        panel = data.add_imerg_daily(panel, local_utc_offset=getattr(config, "LOCAL_UTC_OFFSET_HOURS", -3.0))
+        if getattr(config, "IMERG_PRODUTO", "early") == "early":
+            panel = data.add_imerg_hourly(panel)
+        else:
+            panel = data.add_imerg_daily(panel, local_utc_offset=getattr(config, "LOCAL_UTC_OFFSET_HOURS", -3.0))
     print(f"[pipeline] cenário: {current_tag()} | colunas: {len(panel.columns)}")
     return panel
 
