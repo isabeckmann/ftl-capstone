@@ -46,4 +46,9 @@ SEQ_LEN = 48                      # horas de histórico para a GRU
 # alargada por CLIP_MARGIN x amplitude (0.10 = 10% da amplitude para cada lado).
 CLIP_MARGIN = 0.10
 USE_IMERG = True
+# "early": IMERG Early meia-horária agregada por hora, na bacia e em 3 sub-bacias (usável ao vivo)
+# "final_diario": IMERG Final diário (só pesquisa; chega com ~3,5 meses de atraso)
+IMERG_PRODUTO = "early"
+IMERG_LATENCIA_H = 6              # horas entre o fim da hora observada e o dado estar disponível
+LOCAL_UTC_OFFSET_HOURS = -3.0     # painel em horário local (UTC-3)  
 

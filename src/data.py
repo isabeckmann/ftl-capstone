@@ -245,6 +245,29 @@ def add_imerg_daily(panel: pd.DataFrame, csv=None, col: str = "chuva_bacia_mm", 
     return out
 
 
+def add_imerg_hourly(panel: pd.DataFrame, csv=None, latency_h: float | None = None,
+                     local_utc_offset: float | None = None) -> pd.DataFrame:
+    """Acrescenta chuva_imerg_<area> (mm/h, IMERG Early) com a defasagem de disponibilidade.
+
+    O CSV (src.imerg_early) é indexado pelo FIM da hora em UTC. A hora que termina em T (local) só fica
+    disponível em T + latency_h; é nesse instante que o valor entra no painel. Assim o treino usa exatamente
+    a informação que existiria em tempo real. As somas móveis (RAIN_WINDOWS) são feitas em features.py."""
+    if not isinstance(csv, pd.DataFrame):          # também aceita a série já carregada (uso ao vivo)
+        csv = Path(csv or config.PROCESSED / "chuva_imerg_early_horaria.csv")
+    if not isinstance(csv, pd.DataFrame) and not csv.exists():
+        raise FileNotFoundError(f"Sem {csv}. Gere com: python -m src.imerg_early baixar ... && python -m src.imerg_early series")
+    latency_h = getattr(config, "IMERG_LATENCIA_H", 6) if latency_h is None else latency_h
+    off = getattr(config, "LOCAL_UTC_OFFSET_HOURS", -3.0) if local_utc_offset is None else local_utc_offset
+    s = csv if isinstance(csv, pd.DataFrame) else pd.read_csv(csv, parse_dates=[0], index_col=0)
+    s = s.copy()
+    s.index = s.index + pd.Timedelta(hours=off) + pd.Timedelta(hours=latency_h)
+    s = s[~s.index.duplicated()].reindex(panel.index)
+    out = panel.copy()
+    for c in s.columns:
+        out[f"chuva_imerg_{c}"] = s[c].to_numpy()
+    return out
+
+
 def clean_panel(panel: pd.DataFrame, verbose: bool = True) -> pd.DataFrame:
     """Limpeza do painel horário (idempotente). Parâmetros opcionais em config.py (com estes padrões):
     DATA_START="2018-05-01"  descarta os anos iniciais, quase sem dados e com valores absurdos;
@@ -257,7 +280,7 @@ def clean_panel(panel: pd.DataFrame, verbose: bool = True) -> pd.DataFrame:
     out = out.loc[start:]
     rep = {}
     for c in out.columns:
-        if c.startswith("chuva_") and c != "chuva_bacia":
+        if c.startswith("chuva_") and c != "chuva_bacia" and not c.startswith("chuva_imerg_"):
             bad = out[c] > rain_max
             if bad.any():
                 rep[c] = f"{int(bad.sum())} h > {rain_max:g} mm/h -> NaN"
