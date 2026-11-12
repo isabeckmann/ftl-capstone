@@ -34,10 +34,16 @@ def load_panel() -> pd.DataFrame:
     return panel
 
 
-def save_predictions(model_name: str, target: str, P: Prepared, pred_abs) -> None:
-    """Salva as previsões absolutas (cm) de validação+teste: índice = instante t da previsão."""
+def save_predictions(model_name: str, target: str, P: Prepared, pred_abs, pred_abs_sem_limite=None) -> None:
+    """Salva as previsões absolutas (cm) de validação+teste: índice = instante t da previsão.
+
+    `pred_abs` é a previsão final (com limites de entrada/saída). Se `pred_abs_sem_limite` for dado,
+    também é salvo (colunas pred_sem_limite_<h>h) para medir o efeito dos limites nos mesmos instantes."""
     keep = P.masks["val"] | P.masks["test"]
     df = pd.DataFrame(pred_abs[keep], index=P.index[keep], columns=[f"pred_{h}h" for h in P.horizons])
+    if pred_abs_sem_limite is not None:
+        for j, h in enumerate(P.horizons):
+            df[f"pred_sem_limite_{h}h"] = pred_abs_sem_limite[keep][:, j]
     df["cota_t"] = P.base[keep]
     for j, h in enumerate(P.horizons):
         df[f"obs_{h}h"] = P.Yabs[keep][:, j]

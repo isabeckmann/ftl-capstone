@@ -6,6 +6,7 @@ nas cheias extremas de 2023-2024. A previsão absoluta é cota[t] + variação p
 """
 from __future__ import annotations
 
+import warnings
 from dataclasses import dataclass, field
 
 import numpy as np
@@ -160,6 +161,51 @@ class Scaler:
         return Z * self.std + self.mean
 
 
+@dataclass
+class Bounds:
+    """Faixa [mín, máx] de cada variável no TREINO, alargada por uma margem (fração da amplitude).
+
+    Usada para (a) limitar as entradas à faixa vista no treino e (b) limitar a variação prevista.
+    Redes e modelos lineares extrapolam sem freio fora da faixa do treino (ex.: MLP prevendo 4676 cm
+    em mai/2024); árvores já são limitadas por construção, então para elas o efeito é quase nulo.
+    NaN é ignorado no ajuste e preservado no recorte."""
+    lo: np.ndarray
+    hi: np.ndarray
+
+    @classmethod
+    def fit(cls, A: np.ndarray, margin: float | None = None):
+        margin = getattr(config, "CLIP_MARGIN", 0.10) if margin is None else margin
+        axes = tuple(range(A.ndim - 1))
+        with np.errstate(all="ignore"), warnings.catch_warnings():
+            warnings.simplefilter("ignore", RuntimeWarning)      # colunas só com NaN
+            lo, hi = np.nanmin(A, axis=axes), np.nanmax(A, axis=axes)
+        pad = margin * (hi - lo)
+        lo = np.where(np.isnan(lo), -np.inf, lo - pad)
+        hi = np.where(np.isnan(hi), np.inf, hi + pad)
+        return cls(lo.astype("float32"), hi.astype("float32"))
+
+    def clip(self, A: np.ndarray) -> np.ndarray:
+        return np.clip(A, self.lo, self.hi).astype(A.dtype)
+
+    def frac_outside(self, A: np.ndarray) -> np.ndarray:
+        """Fração das amostras fora da faixa, por variável (diagnóstico)."""
+        axes = tuple(range(A.ndim - 1))
+        return ((A < self.lo) | (A > self.hi)).mean(axis=axes)
+
+
+def input_bounds(P: Prepared, margin: float | None = None) -> Bounds:
+    return Bounds.fit(P.X[P.masks["train"]], margin)
+
+
+def output_bounds(P: Prepared, margin: float | None = None) -> Bounds:
+    return Bounds.fit(P.Y[P.masks["train"]], margin)
+
+
+def limit_delta(P: Prepared, delta: np.ndarray, margin: float | None = None) -> np.ndarray:
+    """Recorta a variação prevista (N, H) à faixa vista no treino em cada horizonte (+ margem)."""
+    return output_bounds(P, margin).clip(np.asarray(delta, dtype="float32"))
+
+
 def with_missing_flags(Xs: np.ndarray, cols=None):
     """Troca NaN por 0 (= média do treino, após padronizar) e acrescenta colunas 0/1 'estava faltando'.
 
@@ -172,8 +218,18 @@ def with_missing_flags(Xs: np.ndarray, cols=None):
     return np.concatenate([filled, flags], axis=-1), cols
 
 
-def nn_inputs(P: Prepared):
-    """Entradas prontas para Ridge/MLP/GRU: padroniza (ajuste só no treino), imputa e acrescenta indicadores."""
-    sc = Scaler.fit(P.X[P.masks["train"]])
-    Xn, cols = with_missing_flags(sc.transform(P.X))
+def clipped_X(P: Prepared, clip: bool = True) -> np.ndarray:
+    """P.X com cada variável limitada à faixa do treino (+ margem). No treino não muda nada."""
+    return input_bounds(P).clip(P.X) if clip else P.X
+
+
+def nn_inputs(P: Prepared, clip: bool = True):
+    """Entradas prontas para Ridge/MLP/GRU: limita à faixa do treino (clip=True), padroniza (ajuste só no
+    treino), imputa e acrescenta indicadores de falta.
+
+    Os indicadores são escolhidos pelas colunas com falta em P.X inteiro (não muda com clip), então
+    `nn_inputs(P, True)` e `nn_inputs(P, False)` têm as mesmas colunas e servem ao mesmo modelo."""
+    X = clipped_X(P, clip)
+    sc = Scaler.fit(X[P.masks["train"]])
+    Xn, cols = with_missing_flags(sc.transform(X))
     return Xn, sc
