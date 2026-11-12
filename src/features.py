@@ -40,7 +40,7 @@ def drop_sparse_columns(panel: pd.DataFrame, protect=(), verbose: bool = True) -
 class Prepared:
     index: pd.DatetimeIndex          # instante t de cada amostra
     X: np.ndarray                    # (N, F) tabular  ou  (N, L, F) sequência
-    Y: np.ndarray                    # (N, H) variação da cota em cada horizonte
+    Y: np.ndarray                    # (N, H) variação da cota em cada horizonte (pode ter NaN no teste)
     base: np.ndarray                 # (N,) cota em t
     horizons: list
     feature_names: list = field(default_factory=list)
@@ -64,16 +64,25 @@ def split_masks(index: pd.DatetimeIndex, horizons, train_end=None, val_end=None,
     }
 
 
-def build_tabular(panel: pd.DataFrame, target: str, horizons=None, lags=None, rain_windows=None,
-                  allow_missing: bool = True) -> Prepared:
-    horizons = list(horizons or config.HORIZONS)
+def _masks_with_targets(index, horizons, Y: np.ndarray) -> dict:
+    """Treino e validação exigem o alvo em TODOS os horizontes (a perda é calculada nos três de uma vez).
+
+    No teste basta um horizonte válido: cada horizonte é avaliado nos instantes em que a cota em t+h existe.
+    Sem isso, uma lacuna de poucas horas apagava também as amostras de 6 h e 12 h ao redor (até 24 h antes),
+    e o "pico observado" dos eventos mudava conforme o horizonte."""
+    m = split_masks(index, horizons)
+    full = ~np.isnan(Y).any(axis=1)
+    m["train"] &= full
+    m["val"] &= full
+    return m
+
+
+def tabular_features(panel: pd.DataFrame, lags=None, rain_windows=None) -> pd.DataFrame:
+    """Variáveis tabulares de cada instante t (só passado). Usada no treino e na previsão ao vivo (src.ao_vivo)."""
     lags = lags or config.LAGS
     rain_windows = rain_windows or config.RAIN_WINDOWS
-    panel = drop_sparse_columns(panel.dropna(axis=1, how="all"), protect=[f"cota_{target}"])
-    tcol = f"cota_{target}"
     cota_cols = [c for c in panel.columns if c.startswith("cota_")]
     rain_cols = [c for c in panel.columns if c.startswith("chuva_")]
-
     F = {}
     for c in cota_cols:
         F[f"{c}_t"] = panel[c]
@@ -84,17 +93,26 @@ def build_tabular(panel: pd.DataFrame, target: str, horizons=None, lags=None, ra
             F[f"{c}_s{w}h"] = panel[c].rolling(w, min_periods=max(1, int(0.8 * w))).sum()
     for c in [c for c in panel.columns if c.startswith("imerg_")]:      # acumulados diários do IMERG (já alinhados)
         F[c] = panel[c]
-    F = pd.DataFrame(F)
+    return pd.DataFrame(F, index=panel.index)
+
+
+def build_tabular(panel: pd.DataFrame, target: str, horizons=None, lags=None, rain_windows=None,
+                  allow_missing: bool = True) -> Prepared:
+    horizons = list(horizons or config.HORIZONS)
+    panel = drop_sparse_columns(panel.dropna(axis=1, how="all"), protect=[f"cota_{target}"])
+    tcol = f"cota_{target}"
+    F = tabular_features(panel, lags, rain_windows)
 
     Y = pd.DataFrame({f"y_{h}h": panel[tcol].shift(-h) - panel[tcol] for h in horizons})
     if allow_missing:       # só a própria estação-alvo precisa estar válida; as demais podem ter buracos (NaN)
         req = [c for c in F.columns if c.startswith(f"{tcol}_")]
-        ok = F[req].notna().all(axis=1) & Y.notna().all(axis=1)
+        ok = F[req].notna().all(axis=1) & Y.notna().any(axis=1)
     else:
-        ok = F.notna().all(axis=1) & Y.notna().all(axis=1)
+        ok = F.notna().all(axis=1) & Y.notna().any(axis=1)
     F, Y, base = F[ok], Y[ok], panel.loc[ok, tcol]
-    return Prepared(F.index, F.to_numpy("float32"), Y.to_numpy("float32"), base.to_numpy("float32"),
-                    horizons, list(F.columns), split_masks(F.index, horizons))
+    Yv = Y.to_numpy("float32")
+    return Prepared(F.index, F.to_numpy("float32"), Yv, base.to_numpy("float32"),
+                    horizons, list(F.columns), _masks_with_targets(F.index, horizons, Yv))
 
 
 def build_sequences(panel: pd.DataFrame, target: str, horizons=None, seq_len=None,
@@ -114,12 +132,12 @@ def build_sequences(panel: pd.DataFrame, target: str, horizons=None, seq_len=Non
         ok = end + h < T
         Y[ok, j] = tgt[end[ok] + h] - tgt[end[ok]]
     if allow_missing:       # só a cota da estação-alvo no instante t é obrigatória
-        valid = ~np.isnan(W[:, -1, cols.index(f"cota_{target}")]) & ~np.isnan(Y).any(axis=1)
+        valid = ~np.isnan(W[:, -1, cols.index(f"cota_{target}")]) & ~np.isnan(Y).all(axis=1)
     else:
-        valid = ~np.isnan(W).any(axis=(1, 2)) & ~np.isnan(Y).any(axis=1)
+        valid = ~np.isnan(W).any(axis=(1, 2)) & ~np.isnan(Y).all(axis=1)
     idx = panel.index[end][valid]
     return Prepared(idx, np.ascontiguousarray(W[valid]), Y[valid], tgt[end][valid], horizons, cols,
-                    split_masks(idx, horizons))
+                    _masks_with_targets(idx, horizons, Y[valid]))
 
 
 @dataclass
