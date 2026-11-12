@@ -41,4 +41,9 @@ ALERT_LEVEL_CM = {"86510000": None, "86720000": None}
 LAGS = (1, 3, 6, 12, 24)          # variações da cota em t - lag
 RAIN_WINDOWS = (6, 12, 24, 48)    # acumulados de chuva (h)
 SEQ_LEN = 48                      # horas de histórico para a GRU
-USE_IMERG = True  
+
+# Limites contra extrapolação: entradas e variação prevista ficam na faixa do TREINO,
+# alargada por CLIP_MARGIN x amplitude (0.10 = 10% da amplitude para cada lado).
+CLIP_MARGIN = 0.10
+USE_IMERG = True
+
