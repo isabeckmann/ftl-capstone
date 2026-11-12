@@ -179,11 +179,20 @@ def build_panel(raw_dir=None, stations=None, **kw) -> pd.DataFrame:
 
 
 def fill_short_gaps(panel: pd.DataFrame, max_gap: int = 3) -> pd.DataFrame:
-    """Interpola a cota só em lacunas curtas (<= max_gap horas). Chuva não é preenchida."""
+    """Interpola a cota só em lacunas curtas (<= max_gap horas). Chuva não é preenchida.
+
+    Atenção: `interpolate(limit=n)` do pandas preenche as n PRIMEIRAS horas de qualquer lacuna, inclusive das
+    longas (inventando valores no início de cada falha de sensor). Por isso as lacunas longas são deixadas intactas."""
     out = panel.copy()
     for c in out.columns:
         if c.startswith("cota_"):
-            out[c] = out[c].interpolate(limit=max_gap, limit_area="inside")
+            s = out[c]
+            miss = s.isna()
+            run_id = (miss != miss.shift()).cumsum()
+            run_len = miss.groupby(run_id).transform("size")
+            short = miss & (run_len <= max_gap)
+            filled = s.interpolate(limit_area="inside")
+            out[c] = s.where(~short, filled)
     return out
 
 
