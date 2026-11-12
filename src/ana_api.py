@@ -125,7 +125,8 @@ class AnaClient:
             return self.names
         for key, n in PARAM_SETS.items():
             try:
-                df = self._fetch({n["codigo"]: PROBE_STATION, n["filtro"]: "DATA_LEITURA", n["range"]: "HORA_24"})
+                df = self._fetch({n["codigo"]: PROBE_STATION, n["filtro"]: "DATA_LEITURA", n["range"]: "HORA_24",
+                                  n["data"]: pd.Timestamp.now().strftime("%Y-%m-%d")})   # sem data a API não devolve nada
             except Exception:  # noqa: BLE001
                 continue
             if len(df):
