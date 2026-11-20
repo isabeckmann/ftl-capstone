@@ -25,10 +25,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/checkout@v4
-        with:
-          ref: dados
-          path: dados
+      - name: Branch dados (cria na primeira execução)
+        run: |
+          if git ls-remote --exit-code --heads origin dados >/dev/null; then
+            git fetch --depth 1 origin dados
+            git worktree add --detach dados FETCH_HEAD
+          else
+            git worktree add --orphan -b dados dados
+          fi
 
       - uses: actions/setup-python@v5
         with:
