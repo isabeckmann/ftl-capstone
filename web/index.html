@@ -9,212 +9,247 @@ body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Cheias do Taquari</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
-/* Layout: painel de leitura de régua — faixa de título, mapa + fichas das estações, explorador de evento com a régua ao lado, depois métricas e série longa. */
 :root {
-  --paper: #f3f4f2;
-  --surface: #fbfbfa;
-  --ink: #15191c;
-  --ink-2: #4b555b;
-  --ink-3: #7d878d;
-  --rule: #d9dedf;
-  --rule-soft: #e7eaea;
-  --silt: #9c5a1a;
-  --silt-soft: rgba(156, 90, 26, .12);
-  --warn: #a8660a;
-  --warn-soft: #fbefd9;
-  --band-train: rgba(75, 85, 91, .06);
-  --band-val: rgba(75, 85, 91, .11);
-  --band-ev: rgba(156, 90, 26, .10);
-  --gap: rgba(125, 135, 141, .16);
-  --m-persistencia: #7d878d;
-  --m-ridge: #2a78d6;
-  --m-hgb: #eb6834;
-  --m-mlp: #1baf7a;
-  --m-gru: #eda100;
-  --seq-0: #cde2fb; --seq-1: #9ec5f4; --seq-2: #6da7ec; --seq-3: #3987e5;
-  --seq-4: #256abf; --seq-5: #184f95; --seq-6: #0d366b;
-  --f-display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
-  --f-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
-  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
-  --radius: 6px;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    color-scheme: dark;
-    --paper: #111416; --surface: #181c1f; --ink: #eceeee; --ink-2: #b4bbbf; --ink-3: #848d93;
-    --rule: #2c3236; --rule-soft: #22272a; --silt: #d68d48; --silt-soft: rgba(214, 141, 72, .16);
-    --warn: #e0a23f; --warn-soft: #2e2414;
-    --band-train: rgba(180, 187, 191, .04); --band-val: rgba(180, 187, 191, .09);
-    --band-ev: rgba(214, 141, 72, .13); --gap: rgba(132, 141, 147, .2);
-    --m-persistencia: #848d93; --m-ridge: #3987e5; --m-hgb: #d95926; --m-mlp: #199e70; --m-gru: #c98500;
-    --seq-0: #104281; --seq-1: #184f95; --seq-2: #256abf; --seq-3: #3987e5;
-    --seq-4: #6da7ec; --seq-5: #9ec5f4; --seq-6: #cde2fb;
-  }
-}
-:root[data-theme="dark"] {
-  color-scheme: dark;
-  --paper: #111416; --surface: #181c1f; --ink: #eceeee; --ink-2: #b4bbbf; --ink-3: #848d93;
-  --rule: #2c3236; --rule-soft: #22272a; --silt: #d68d48; --silt-soft: rgba(214, 141, 72, .16);
-  --warn: #e0a23f; --warn-soft: #2e2414;
-  --band-train: rgba(180, 187, 191, .04); --band-val: rgba(180, 187, 191, .09);
-  --band-ev: rgba(214, 141, 72, .13); --gap: rgba(132, 141, 147, .2);
-  --m-persistencia: #848d93; --m-ridge: #3987e5; --m-hgb: #d95926; --m-mlp: #199e70; --m-gru: #c98500;
-  --seq-0: #104281; --seq-1: #184f95; --seq-2: #256abf; --seq-3: #3987e5;
-  --seq-4: #6da7ec; --seq-5: #9ec5f4; --seq-6: #cde2fb;
+  color-scheme: light;
+  --paper: #F5F2EB;
+  --stone: #EAE5DC;
+  --surface: #F5F2EB;
+  --ink: #1C1E21;
+  --ink-2: #4A4E54;
+  --ink-3: #6B675F;
+  --rule: #D5CFC4;
+  --rule-soft: #E2DDD3;
+  --agua: #184E68;
+  --agua-soft: rgba(24, 78, 104, .08);
+  --terra: #C25934;
+  --terra-soft: rgba(194, 89, 52, .08);
+  --ocre: #D48C2A;
+  --ocre-ink: #94600F;
+  --verde: #2D5A43;
+  --silt: #D48C2A;
+  --silt-ink: #94600F;
+  --silt-soft: rgba(212, 140, 42, .13);
+  --warn: #C25934;
+  --warn-soft: rgba(194, 89, 52, .08);
+  --band-train: rgba(74, 78, 84, .06);
+  --band-val: rgba(74, 78, 84, .12);
+  --band-ev: rgba(194, 89, 52, .08);
+  --gap: rgba(107, 103, 95, .16);
+  --m-persistencia: #8A8378;
+  --m-ridge: #D48C2A;
+  --m-hgb: #C25934;
+  --m-mlp: #2D5A43;
+  --m-gru: #4A87A8;
+  --seq-0: #DCE5E6; --seq-1: #B5CAD0; --seq-2: #89A9B6; --seq-3: #5C889C;
+  --seq-4: #356883; --seq-5: #184E68; --seq-6: #0D3347;
+  --f-display: "Newsreader", "Source Serif 4", Georgia, serif;
+  --f-body: "IBM Plex Sans", "Plus Jakarta Sans", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --radius: 2px;
+  --gutter: max(16px, env(safe-area-inset-left, 0px));
+  --measure: 70ch;
 }
 
 * { box-sizing: border-box; }
 body {
-  background: var(--paper); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.5;
-  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
-  padding-block: 0 48px;
+  background: var(--paper); color: var(--ink); font-family: var(--f-body); font-size: 17px; line-height: 1.65;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
 }
-.wrap { max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
-h1, h2, h3 { font-family: var(--f-display); font-weight: 600; margin: 0; text-wrap: balance; letter-spacing: .01em; }
-h1 { font-size: clamp(2.4rem, 6vw, 3.6rem); line-height: .95; font-weight: 700; }
-h2 { font-size: 1.65rem; line-height: 1.1; }
-h3 { font-size: 1.15rem; }
-p { margin: 0; max-width: 68ch; }
-.eyebrow { font-family: var(--f-mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+a { color: var(--agua); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, var(--agua) 45%, transparent); transition: color .15s, text-decoration-color .15s; }
+a:hover { color: var(--terra); text-decoration-color: var(--terra); }
+.wrap { display: flex; flex-direction: column; }
+.band { padding-inline: var(--gutter); padding-block: 56px 64px; border-top: 1px solid var(--rule); }
+.band.paper { background: var(--paper); }
+.band.stone { background: var(--stone); }
+.band.agua { background: var(--agua); color: var(--paper); border-top: 0; }
+.inner { max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+h1, h2, h3 { font-family: var(--f-display); font-weight: 600; margin: 0; text-wrap: balance; letter-spacing: -.005em; color: var(--ink); }
+h1 { font-size: clamp(2.6rem, 7vw, 4.6rem); line-height: 1; font-weight: 700; letter-spacing: -.02em; color: var(--agua); }
+h2 { font-size: clamp(1.7rem, 3.4vw, 2.3rem); line-height: 1.12; }
+h3 { font-size: 1.3rem; line-height: 1.2; }
+p { margin: 0; max-width: var(--measure); }
+.eyebrow { font-family: var(--f-mono); font-size: .72rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
 .muted { color: var(--ink-2); }
 .num { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
-
-/* ---------- cabeçalho */
-header.top { padding-block: 28px 4px; display: grid; grid-template-columns: 1fr auto; gap: 18px 32px; align-items: end; border-bottom: 2px solid var(--ink); padding-bottom: 18px; }
-header.top .lede { color: var(--ink-2); font-size: 1.05rem; margin-top: 10px; }
-.facts { display: flex; gap: 22px; flex-wrap: wrap; }
-.fact { display: flex; flex-direction: column; gap: 2px; min-width: 7.5rem; }
-.fact b { font-family: var(--f-display); font-size: 1.9rem; line-height: 1; font-weight: 600; font-variant-numeric: tabular-nums; }
-.fact span { font-size: .78rem; color: var(--ink-3); }
-
-/* ---------- blocos */
-section.block { display: flex; flex-direction: column; gap: 14px; }
-.block-head { display: flex; justify-content: space-between; align-items: end; gap: 12px 24px; flex-wrap: wrap; }
-.block-head p { color: var(--ink-2); font-size: .95rem; }
-.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); }
-
-/* ---------- controles */
-.controls { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: center; }
-.ctl { display: flex; align-items: center; gap: 8px; }
-.ctl > label, .ctl > .lbl { font-size: .74rem; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); font-family: var(--f-mono); }
-.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; padding: 2px; background: var(--surface); }
-.seg button { font: 600 .88rem var(--f-body); color: var(--ink-2); background: none; border: 0; padding: 5px 12px; border-radius: 999px; cursor: pointer; }
-.seg button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
-.seg button:hover:not([aria-pressed="true"]) { color: var(--ink); background: var(--rule-soft); }
-button:focus-visible, input:focus-visible { outline: 2px solid var(--silt); outline-offset: 2px; }
+header.top { padding-inline: var(--gutter); padding-block: 40px 36px; background: var(--paper); }
+header.top .inner { gap: 0; }
+.kicker { font: 500 .78rem var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--terra); margin-bottom: 18px; display: flex; gap: 10px; align-items: center; }
+.kicker::before { content: ""; width: 28px; height: 2px; background: var(--terra); }
+header.top .lede { font-family: var(--f-display); font-size: clamp(1.2rem, 2.2vw, 1.5rem); line-height: 1.4; color: var(--ink-2); margin-top: 18px; max-width: 46ch; font-weight: 500; }
+.meta { margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--rule); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px 32px; }
+.meta div { display: flex; flex-direction: column; gap: 2px; font-size: .9rem; color: var(--ink-2); line-height: 1.45; }
+.meta dt, .meta .lbl { font: 500 .68rem var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.facts-band .inner { gap: 18px; }
+.facts-band .eyebrow { color: color-mix(in srgb, var(--paper) 70%, transparent); }
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; }
+.fact { display: flex; flex-direction: column; gap: 8px; padding: 4px 28px 4px 22px; border-left: 1px solid color-mix(in srgb, var(--paper) 28%, transparent); }
+.fact:first-child { border-left: 3px solid var(--ocre); }
+.fact b { font: 500 clamp(2.6rem, 6vw, 4rem) var(--f-mono); line-height: 1; letter-spacing: -.03em; font-variant-numeric: tabular-nums; color: var(--paper); }
+.fact span { font: .8rem var(--f-mono); color: color-mix(in srgb, var(--paper) 78%, transparent); line-height: 1.4; }
+section.block { display: block; }
+.block-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 14px 32px; padding-bottom: 18px; border-bottom: 1px solid var(--ink); }
+.block-head > div:first-child { display: flex; flex-direction: column; gap: 10px; }
+.block-head p { color: var(--ink-2); font-size: 1rem; }
+.sec-num { font: 500 .74rem var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--terra); display: flex; gap: 10px; align-items: center; }
+.sec-num::before { content: ""; width: 22px; height: 2px; background: currentColor; }
+.sec-num.verde { color: var(--verde); }
+.sec-num.agua { color: var(--agua); }
+.panel { background: var(--surface); border: 0; border-top: 1px solid var(--rule); border-radius: 0; }
+.band.paper .panel { background: transparent; }
+.controls { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; }
+.ctl { display: flex; align-items: center; gap: 10px; }
+.ctl > label, .ctl > .lbl { font: 500 .7rem var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.seg { display: inline-flex; gap: 2px; border-bottom: 1px solid var(--rule); }
+.seg button { font: 500 .9rem var(--f-body); color: var(--ink-2); background: none; border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px; padding: 6px 10px; cursor: pointer; transition: color .15s, border-color .15s; }
+.seg button[aria-pressed="true"] { color: var(--agua); border-bottom-color: var(--agua); font-weight: 600; }
+.seg button:hover:not([aria-pressed="true"]) { color: var(--ink); border-bottom-color: var(--rule); }
+button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid var(--agua); outline-offset: 2px; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.chip { display: inline-flex; align-items: center; gap: 7px; font: 600 .84rem var(--f-body); color: var(--ink-2); border: 1px solid var(--rule); background: var(--surface); padding: 4px 10px 4px 8px; border-radius: 999px; cursor: pointer; }
-.chip .sw { width: 14px; height: 3px; border-radius: 2px; background: var(--c); }
+.chip { display: inline-flex; align-items: center; gap: 8px; font: 500 .86rem var(--f-body); color: var(--ink); border: 1px solid var(--rule); background: transparent; padding: 4px 10px 4px 8px; border-radius: var(--radius); cursor: pointer; transition: border-color .15s, background .15s; }
+.chip:hover { border-color: var(--ink-3); }
+.chip .sw { width: 16px; height: 3px; background: var(--c); }
 .chip.dash .sw { background: repeating-linear-gradient(90deg, var(--c) 0 4px, transparent 4px 7px); }
-.chip[aria-pressed="false"] { opacity: .45; }
-.chip[aria-pressed="false"] .sw { background: var(--ink-3); }
-.toggle { display: inline-flex; align-items: center; gap: 8px; font-size: .9rem; color: var(--ink-2); cursor: pointer; }
-.toggle input { accent-color: var(--silt); width: 16px; height: 16px; }
-
-/* ---------- mapa */
-.map-grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 16px; }
-.map-box { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.chip[aria-pressed="false"] { color: var(--ink-3); border-style: dashed; }
+.chip[aria-pressed="false"] .sw { background: var(--rule); }
+.toggle { display: inline-flex; align-items: center; gap: 8px; font-size: .92rem; color: var(--ink-2); cursor: pointer; }
+.toggle input { accent-color: var(--agua); width: 16px; height: 16px; }
+.map-grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 0 40px; }
+.map-box { padding: 16px 0 0; display: flex; flex-direction: column; gap: 12px; }
 #mapa { width: 100%; display: block; }
-.legend-ramp { display: flex; flex-direction: column; gap: 4px; max-width: 320px; }
-.legend-ramp .bar { height: 10px; border-radius: 2px; }
+.legend-ramp { display: flex; flex-direction: column; gap: 5px; max-width: 320px; }
+.legend-ramp .bar { height: 8px; border-radius: 0; }
 .legend-ramp .ticks { display: flex; justify-content: space-between; font: .72rem var(--f-mono); color: var(--ink-3); }
-.stations { padding: 6px 0; display: flex; flex-direction: column; }
-.st-row { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 12px 16px; border-left: 3px solid transparent; cursor: pointer; background: none; border-top: 0; border-right: 0; border-bottom: 1px solid var(--rule-soft); text-align: left; color: var(--ink); font: inherit; }
-.st-row:last-child { border-bottom: 0; }
-.st-row:hover { background: var(--rule-soft); }
-.st-row[aria-pressed="true"] { border-left-color: var(--silt); background: var(--silt-soft); }
-.st-row .nm { font-family: var(--f-display); font-size: 1.2rem; font-weight: 600; line-height: 1.1; }
-.st-row .cd { font: .75rem var(--f-mono); color: var(--ink-3); }
-.st-row .ar { font: 600 .95rem var(--f-mono); text-align: right; font-variant-numeric: tabular-nums; }
+.stations { padding: 0; display: flex; flex-direction: column; }
+.st-row { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 14px 14px 14px 16px; border-left: 3px solid transparent; cursor: pointer; background: none; border-top: 0; border-right: 0; border-bottom: 1px solid var(--rule); text-align: left; color: var(--ink); font: inherit; transition: background .15s, border-color .15s; }
+.st-row:hover { background: var(--agua-soft); border-left-color: var(--rule); }
+.st-row[aria-pressed="true"] { border-left-color: var(--ocre); background: var(--silt-soft); }
+.st-row .nm { font-family: var(--f-display); font-size: 1.3rem; font-weight: 600; line-height: 1.15; }
+.st-row .cd { font: .74rem var(--f-mono); color: var(--ink-3); }
+.st-row .ar { font: 500 1rem var(--f-mono); text-align: right; font-variant-numeric: tabular-nums; color: var(--agua); }
 .st-row .ar small { display: block; font-weight: 400; font-size: .72rem; color: var(--ink-3); }
-.tag { font: 600 .66rem var(--f-mono); letter-spacing: .06em; text-transform: uppercase; padding: 1px 6px; border-radius: 3px; border: 1px solid var(--rule); color: var(--ink-2); margin-left: 6px; vertical-align: 2px; }
-.tag.alvo { border-color: var(--silt); color: var(--silt); }
-.rain-sum { padding: 12px 16px; border-top: 1px solid var(--rule); display: flex; flex-direction: column; gap: 4px; }
-.rain-sum b { font-family: var(--f-display); font-size: 1.7rem; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
-.note { font-size: .82rem; color: var(--ink-3); }
-
-/* ---------- evento */
-.ev-grid { display: grid; grid-template-columns: minmax(0, 1fr) 190px; gap: 16px; }
-.ev-main { padding: 12px 12px 6px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.ev-side { padding: 12px 8px; display: flex; flex-direction: column; gap: 6px; }
-.chart-cap { font: .74rem var(--f-mono); color: var(--ink-3); padding-left: 4px; }
+.tag { font: 500 .64rem var(--f-mono); letter-spacing: .1em; text-transform: uppercase; padding: 1px 6px; border: 1px solid var(--rule); color: var(--ink-2); margin-left: 8px; vertical-align: 3px; border-radius: 0; }
+.tag.alvo { border-color: var(--terra); color: var(--terra); }
+.rain-sum { padding: 18px 16px 6px 19px; display: flex; flex-direction: column; gap: 6px; border-left: 3px solid var(--agua); margin-top: 18px; }
+.rain-sum b { font: 500 2.3rem var(--f-mono); letter-spacing: -.03em; line-height: 1; color: var(--agua); font-variant-numeric: tabular-nums; }
+.note { font-size: .84rem; color: var(--ink-3); }
+.ev-grid { display: grid; grid-template-columns: minmax(0, 1fr) 200px; gap: 0 32px; }
+.ev-main { padding: 16px 0 6px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.ev-side { padding: 16px 0 6px 20px; display: flex; flex-direction: column; gap: 8px; border-left: 1px solid var(--rule); border-top: 1px solid var(--rule); }
+.chart-cap { font: .74rem var(--f-mono); color: var(--ink-3); padding-left: 0; letter-spacing: .01em; }
 svg text { fill: var(--ink-3); font-family: var(--f-mono); font-size: 11px; }
 svg .axis path, svg .axis line { stroke: var(--rule); }
 svg .grid line { stroke: var(--rule-soft); }
 svg .grid path { display: none; }
-.alert { display: flex; gap: 10px; align-items: flex-start; background: var(--warn-soft); color: var(--ink); border: 1px solid var(--warn); border-radius: var(--radius); padding: 10px 14px; font-size: .92rem; }
-.alert svg { flex: none; margin-top: 2px; }
+.alert { display: flex; gap: 12px; align-items: flex-start; background: var(--warn-soft); color: var(--ink); border: 0; border-left: 3px solid var(--terra); border-radius: 0; padding: 12px 16px; font-size: .95rem; line-height: 1.55; }
+.alert svg { flex: none; margin-top: 4px; color: var(--terra); }
 .alert[hidden] { display: none; }
+.alert.calm { border-left-color: var(--verde); background: rgba(45, 90, 67, .07); }
+.alert.calm svg { color: var(--verde); }
 .tbl-wrap { overflow-x: auto; }
 table { border-collapse: collapse; width: 100%; font-size: .9rem; }
-th, td { padding: 7px 10px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--rule-soft); }
-th { font: 600 .7rem var(--f-mono); letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); border-bottom: 1px solid var(--rule); vertical-align: bottom; }
-th:first-child, td:first-child { text-align: left; }
+th, td { padding: 8px 12px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--rule); }
+th { font: 500 .68rem var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); border-bottom: 1px solid var(--ink); vertical-align: bottom; }
+th:first-child, td:first-child { text-align: left; padding-left: 0; }
 td { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
 td:first-child { font-family: var(--f-body); font-weight: 600; }
-td .sw { display: inline-block; width: 12px; height: 3px; border-radius: 2px; margin-right: 8px; vertical-align: middle; }
-td.pos { color: var(--ink); }
+td .sw { display: inline-block; width: 14px; height: 3px; margin-right: 10px; vertical-align: middle; }
+tbody tr { transition: background .15s; }
+tbody tr:hover { background: var(--agua-soft); }
+td.pos { color: var(--terra); font-weight: 500; }
 td.dim { color: var(--ink-3); }
-
-/* ---------- métricas e série longa */
-.two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.small-box { padding: 12px 12px 6px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .85rem; color: var(--ink-2); }
-.legend span { display: inline-flex; align-items: center; gap: 6px; }
-.legend i { width: 14px; height: 3px; border-radius: 2px; background: var(--c); display: inline-block; }
-.legend i.box { height: 10px; width: 14px; border-radius: 2px; border: 1px solid var(--rule); }
-
-/* ---------- tooltip */
-#tip { position: fixed; pointer-events: none; z-index: 20; background: var(--surface); color: var(--ink); border: 1px solid var(--rule); border-radius: var(--radius); box-shadow: 0 6px 22px rgba(0,0,0,.14); padding: 8px 10px; font-size: .82rem; min-width: 150px; }
-#tip .t { font: 600 .74rem var(--f-mono); color: var(--ink-3); margin-bottom: 4px; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 0 40px; }
+.small-box { padding: 16px 0 6px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.small-box h3 { padding-bottom: 4px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font: .8rem var(--f-mono); color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 7px; }
+.legend i { width: 16px; height: 3px; background: var(--c); display: inline-block; }
+.legend i.box { height: 11px; width: 16px; border: 1px solid var(--rule); }
+#tip { position: fixed; pointer-events: none; z-index: 20; background: var(--paper); color: var(--ink); border: 1px solid var(--ink); border-radius: 0; box-shadow: 3px 3px 0 rgba(28, 30, 33, .08); padding: 8px 11px; font-size: .84rem; line-height: 1.45; min-width: 160px; }
+#tip .t { font: 500 .72rem var(--f-mono); color: var(--ink-3); margin-bottom: 5px; padding-bottom: 4px; border-bottom: 1px solid var(--rule); }
 #tip .r { display: flex; justify-content: space-between; gap: 14px; align-items: center; }
 #tip .r span:first-child { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-2); }
-#tip .r i { width: 10px; height: 3px; border-radius: 2px; background: var(--c); display: inline-block; }
-#tip .r b { font-family: var(--f-mono); font-weight: 600; font-variant-numeric: tabular-nums; }
-
-footer { color: var(--ink-3); font-size: .82rem; border-top: 1px solid var(--rule); padding-top: 14px; display: flex; flex-direction: column; gap: 4px; }
-
-/* ---------- agora (ao vivo) */
-.live-status { display: inline-flex; align-items: center; gap: 8px; font: .8rem var(--f-mono); color: var(--ink-2); }
+#tip .r i { width: 10px; height: 3px; background: var(--c); display: inline-block; }
+#tip .r b { font-family: var(--f-mono); font-weight: 500; font-variant-numeric: tabular-nums; }
+footer { padding-inline: var(--gutter); padding-block: 40px 56px; background: var(--agua); color: color-mix(in srgb, var(--paper) 82%, transparent); font-size: .86rem; line-height: 1.6; }
+footer .inner { gap: 10px; }
+footer .eyebrow { color: var(--ocre); }
+footer span { max-width: 90ch; }
+footer a { color: var(--paper); text-decoration-color: color-mix(in srgb, var(--paper) 50%, transparent); }
+footer a:hover { color: var(--ocre); text-decoration-color: var(--ocre); }
+.live-status { display: inline-flex; align-items: center; gap: 8px; font: .78rem var(--f-mono); color: var(--ink-2); white-space: nowrap; }
 .live-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--ink-3); flex: none; }
-.live-dot.on { background: var(--m-mlp); box-shadow: 0 0 0 3px color-mix(in srgb, var(--m-mlp) 22%, transparent); }
-.live-dot.old { background: var(--warn); }
-.now-card { padding: 14px 14px 8px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
-.now-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px 18px; flex-wrap: wrap; }
-.now-top h3 { font-size: 1.45rem; line-height: 1; }
-.now-level { display: flex; align-items: baseline; gap: 8px; margin-top: 6px; }
-.now-level b { font-family: var(--f-display); font-size: 2.6rem; line-height: .9; font-weight: 600; font-variant-numeric: tabular-nums; }
-.now-level span { font: .82rem var(--f-mono); color: var(--ink-2); }
-.now-fc { display: flex; gap: 6px; flex-wrap: wrap; }
-.fc { border: 1px solid var(--rule); border-radius: var(--radius); padding: 6px 10px; min-width: 5.6rem; display: flex; flex-direction: column; gap: 1px; }
-.fc .h { font: 600 .7rem var(--f-mono); letter-spacing: .06em; color: var(--silt); text-transform: uppercase; }
-.fc b { font-family: var(--f-display); font-size: 1.45rem; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
-.fc small { font: .72rem var(--f-mono); color: var(--ink-3); }
-.ref-line { font-size: .84rem; color: var(--ink-2); }
-.ref-line b { color: var(--ink); }
-.now-sub { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 16px; }
-.up-row { display: grid; grid-template-columns: 1fr auto; gap: 0 12px; padding: 10px 14px; border-bottom: 1px solid var(--rule-soft); align-items: center; }
+.live-dot.on { background: var(--verde); box-shadow: 0 0 0 3px rgba(45, 90, 67, .18); }
+.live-dot.old { background: var(--terra); }
+.now-card { padding: 18px 0 8px; display: flex; flex-direction: column; gap: 12px; min-width: 0; border-top: 3px solid var(--agua); }
+.now-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px 20px; flex-wrap: wrap; }
+.now-top h3 { font-size: 1.6rem; line-height: 1; }
+.now-level { display: flex; align-items: baseline; gap: 10px; margin-top: 10px; }
+.now-level b { font: 500 3.4rem var(--f-mono); line-height: .9; letter-spacing: -.04em; font-variant-numeric: tabular-nums; color: var(--agua); }
+.now-level span { font: .8rem var(--f-mono); color: var(--ink-2); }
+.now-fc { display: flex; gap: 0; flex-wrap: wrap; }
+.fc { border-left: 2px solid var(--ocre); padding: 2px 16px 2px 12px; min-width: 5.8rem; display: flex; flex-direction: column; gap: 2px; }
+.fc .h { font: 500 .68rem var(--f-mono); letter-spacing: .1em; color: var(--ocre-ink); text-transform: uppercase; }
+.fc b { font: 500 1.7rem var(--f-mono); line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.fc small { font: .7rem var(--f-mono); color: var(--ink-3); }
+.ref-line { font-size: .88rem; color: var(--ink-2); line-height: 1.5; }
+.ref-line b { color: var(--terra); font-weight: 600; }
+.two > .now-card + .now-card { }
+.now-sub { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 0 40px; }
+.up-row { display: grid; grid-template-columns: 1fr auto; gap: 0 12px; padding: 12px 0; border-bottom: 1px solid var(--rule); align-items: center; }
 .up-row:last-child { border-bottom: 0; }
-.up-row .nm { font-family: var(--f-display); font-size: 1.1rem; font-weight: 600; }
-.up-row .v { font: 600 .95rem var(--f-mono); text-align: right; font-variant-numeric: tabular-nums; }
+.up-row .nm { font-family: var(--f-display); font-size: 1.15rem; font-weight: 600; }
+.up-row .note { font-family: var(--f-mono); font-size: .72rem; }
+.up-row .v { font: 500 1rem var(--f-mono); text-align: right; font-variant-numeric: tabular-nums; color: var(--agua); }
 .up-row .v small { display: block; font-weight: 400; font-size: .72rem; color: var(--ink-3); }
 .up-row svg { grid-column: 1 / -1; width: 100%; height: 34px; margin-top: 4px; }
-.acc { display: flex; gap: 18px; flex-wrap: wrap; padding: 4px 4px 2px; }
+.acc { display: flex; gap: 14px 28px; flex-wrap: wrap; padding: 8px 0 2px; }
 .acc div { display: flex; flex-direction: column; }
-.acc b { font: 600 1.05rem var(--f-mono); font-variant-numeric: tabular-nums; }
-.acc span { font-size: .74rem; color: var(--ink-3); }
-.live-off { padding: 18px; color: var(--ink-2); font-size: .95rem; }
+.acc b { font: 500 1.2rem var(--f-mono); font-variant-numeric: tabular-nums; color: var(--agua); }
+.acc span { font-size: .76rem; color: var(--ink-3); line-height: 1.4; }
+.live-off { padding: 20px 0; color: var(--ink-2); font-size: .98rem; }
+#now-up { padding-top: 4px; }
+.now-sub .panel .eyebrow { padding: 12px 0 0 !important; }
+.site-nav { position: sticky; top: 0; z-index: 15; background: color-mix(in srgb, var(--paper) 94%, transparent); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border-bottom: 1px solid var(--rule); padding-inline: var(--gutter); }
+.site-nav .bar { max-width: 1240px; margin: 0 auto; display: flex; align-items: center; gap: 12px 28px; min-height: 52px; }
+.site-nav .brand { font: 700 1.1rem var(--f-display); color: var(--agua); text-decoration: none; white-space: nowrap; letter-spacing: -.01em; display: inline-flex; align-items: center; gap: 10px; }
+.site-nav .brand::before { content: ""; width: 10px; height: 10px; background: var(--terra); }
+.site-nav .brand:hover { color: var(--agua); }
+.site-nav ol { list-style: none; margin: 0; padding: 0; display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; flex: 1; }
+.site-nav ol::-webkit-scrollbar { display: none; }
+.site-nav li a { display: block; padding: 15px 10px 13px; font: 500 .74rem var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); text-decoration: none; white-space: nowrap; border-bottom: 2px solid transparent; transition: color .15s, border-color .15s; }
+.site-nav li a span { color: var(--ink-3); margin-right: 6px; }
+.site-nav li a:hover { color: var(--ink); border-bottom-color: var(--rule); }
+.site-nav li a[aria-current="true"] { color: var(--agua); border-bottom-color: var(--agua); }
+.site-nav li a[aria-current="true"] span { color: var(--terra); }
+.site-nav .nav-live { display: inline-flex; align-items: center; gap: 7px; font: .72rem var(--f-mono); color: var(--ink-2); white-space: nowrap; text-decoration: none; }
+.site-nav .nav-live:hover { color: var(--agua); }
+.site-nav .progress { position: absolute; left: 0; bottom: -1px; height: 2px; width: 100%; background: var(--agua); transform-origin: 0 50%; transform: scaleX(0); }
+section[id], #topo { scroll-margin-top: 64px; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+@media (max-width: 900px) {
+  .site-nav .bar { gap: 0 14px; }
+  .site-nav .brand { display: none; }
+  .site-nav .nav-live .txt { display: none; }
+  .site-nav li a { padding-inline: 8px; }
+  .site-nav ol { -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent); mask-image: linear-gradient(90deg, #000 85%, transparent); }
+}
 
 @media (max-width: 900px) {
-  header.top { grid-template-columns: 1fr; }
+  body { font-size: 16.5px; }
+  .band { padding-block: 40px 48px; }
+  .meta { grid-template-columns: 1fr; }
+  .facts { grid-template-columns: 1fr; gap: 22px; }
+  .fact { padding-left: 16px; }
+  .block-head { grid-template-columns: 1fr; }
   .now-sub { grid-template-columns: 1fr; }
   .now-fc { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; }
-  .fc { min-width: 0; padding: 6px 8px; }
-  .map-grid, .two { grid-template-columns: 1fr; }
+  .fc { min-width: 0; padding: 2px 8px 2px 10px; }
+  .map-grid, .two { grid-template-columns: 1fr; gap: 28px; }
   .ev-grid { grid-template-columns: 1fr; }
-  .ev-side { flex-direction: row; align-items: stretch; }
+  .ev-side { flex-direction: row; align-items: stretch; border-left: 0; padding-left: 0; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
@@ -222,118 +257,162 @@ footer { color: var(--ink-3); font-size: .82rem; border-top: 1px solid var(--rul
 </head>
 <body>
 <div class="wrap">
-  <header class="top">
-    <div>
-      <div class="eyebrow">Rio Taquari · RS · estudo de caso</div>
+  <nav class="site-nav" aria-label="Seções da página">
+    <div class="bar">
+      <a class="brand" href="#topo">Cheias do Taquari</a>
+      <ol>
+        <li><a href="#agora"><span>01</span>Agora</a></li>
+        <li><a href="#territorio"><span>02</span>Território</a></li>
+        <li><a href="#cheias"><span>03</span>Cheias</a></li>
+        <li><a href="#resultado"><span>04</span>Resultado</a></li>
+        <li><a href="#historico"><span>05</span>Histórico</a></li>
+        <li><a href="#fontes"><span>·</span>Fontes</a></li>
+      </ol>
+      <a class="nav-live" href="#agora" id="nav-live"><span class="live-dot"></span><span class="txt">ao vivo</span></a>
+    </div>
+    <div class="progress" id="nav-progress" aria-hidden="true"></div>
+  </nav>
+  <header class="top" id="topo">
+    <div class="inner">
+      <div class="kicker">Rio Taquari · RS · estudo de caso</div>
       <h1>Cheias do Taquari</h1>
       <p class="lede" id="lede">Previsão da cota em Muçum e Encantado, avaliada nas cheias de 2023 e 2024.</p>
+      <div class="meta">
+        <div><span class="lbl">Autoria</span>Isadora Beckmann · Future Tech Leaders Brasil, Space Tech Bootcamp 2026</div>
+        <div><span class="lbl">Recorte</span>Bacia do Taquari-Antas até Encantado (19.193 km²) · 2018 a 2026 · horizontes de 6 a 12 h</div>
+        <div><span class="lbl">Fontes</span>ANA (telemetria), NASA GPM IMERG, HydroBASINS, Open-Meteo (GFS/ECMWF), SGB/SACE</div>
+      </div>
     </div>
-    <div class="facts" id="facts"></div>
   </header>
 
-  <section class="block" aria-labelledby="h-agora" id="agora">
-    <div class="block-head">
-      <div>
-        <h2 id="h-agora">Agora</h2>
-        <p>Últimas leituras da ANA, chuva dos pluviômetros da bacia, do satélite IMERG Early e chuva prevista (GFS e ECMWF), com a cota prevista para as próximas 6, 8 e 12 horas. Atualiza de hora em hora.</p>
-      </div>
-      <div class="live-status" id="live-status"><span class="live-dot"></span>carregando…</div>
+  <div class="band agua facts-band">
+    <div class="inner">
+      <div class="eyebrow">O estudo em três números</div>
+      <div class="facts" id="facts"></div>
     </div>
-    <div class="alert" role="note">
-      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5 15 14H1z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path><path d="M8 6v4" stroke="currentColor" stroke-width="1.5"></path><circle cx="8" cy="11.8" r=".9" fill="currentColor"></circle></svg>
-      <div><b>Previsão experimental, de um projeto acadêmico. Não é alerta oficial.</b> Em cheias extremas o modelo tende a exagerar o pico. Para decisões, siga o <a href="https://sace.sgb.gov.br/index_bacias_monitoradas.php?getbacia=btaquari" target="_blank" rel="noopener">SACE Taquari (SGB)</a> e a Defesa Civil (telefone 199).</div>
-    </div>
-    <div class="alert" id="live-avisos" hidden>
-      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"></circle><path d="M8 4.5v4.5" stroke="currentColor" stroke-width="1.5"></path><circle cx="8" cy="11.5" r=".9" fill="currentColor"></circle></svg>
-      <div id="live-avisos-txt"></div>
-    </div>
-    <div id="live-body"><div class="panel live-off">Carregando os dados ao vivo…</div></div>
-  </section>
+  </div>
 
-  <section class="block" aria-labelledby="h-mapa">
-    <div class="block-head">
-      <div>
-        <h2 id="h-mapa">Áreas de drenagem e chuva</h2>
-        <p>Áreas a montante de cada estação (HydroBASINS nível 12) sobre a grade do IMERG (0,1°). As células fora da bacia de Encantado aparecem esmaecidas.</p>
+  <section class="band paper block" aria-labelledby="h-agora" id="agora">
+    <div class="inner">
+      <div class="block-head">
+        <div>
+          <span class="sec-num">01 · Monitoramento</span>
+          <h2 id="h-agora">Agora</h2>
+          <p>Últimas leituras da ANA, chuva dos pluviômetros da bacia, do satélite IMERG Early e chuva prevista (GFS e ECMWF), com a cota prevista para as próximas 6, 8 e 12 horas. Atualiza de hora em hora.</p>
+        </div>
+        <div class="live-status" id="live-status"><span class="live-dot"></span>carregando…</div>
       </div>
-      <div class="ctl"><span class="lbl">Chuva</span><div class="seg" id="seg-mapa" role="group" aria-label="Camada de chuva"></div></div>
-    </div>
-    <div class="map-grid">
-      <div class="panel map-box">
-        <svg id="mapa" role="img" aria-label="Mapa das áreas de drenagem sobre a chuva do IMERG"></svg>
-        <div class="legend-ramp" id="leg-mapa"></div>
+      <div class="alert" role="note">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5 15 14H1z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path><path d="M8 6v4" stroke="currentColor" stroke-width="1.5"></path><circle cx="8" cy="11.8" r=".9" fill="currentColor"></circle></svg>
+        <div><b>Previsão experimental, de um projeto acadêmico. Não é alerta oficial.</b> Em cheias extremas o modelo tende a exagerar o pico. Para decisões, siga o <a href="https://sace.sgb.gov.br/index_bacias_monitoradas.php?getbacia=btaquari" target="_blank" rel="noopener">SACE Taquari (SGB)</a> e a Defesa Civil (telefone 199).</div>
       </div>
-      <div class="panel">
-        <div class="stations" id="stations"></div>
-        <div class="rain-sum" id="rain-sum"></div>
+      <div class="alert" id="live-avisos" hidden>
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"></circle><path d="M8 4.5v4.5" stroke="currentColor" stroke-width="1.5"></path><circle cx="8" cy="11.5" r=".9" fill="currentColor"></circle></svg>
+        <div id="live-avisos-txt"></div>
       </div>
+      <div id="live-body"><div class="panel live-off">Carregando os dados ao vivo…</div></div>
     </div>
   </section>
 
-  <section class="block" aria-labelledby="h-ev">
-    <div class="block-head">
-      <div>
-        <h2 id="h-ev">Evento: observado × previsto</h2>
-        <p>Cada curva prevista está posicionada no instante previsto (t + h). A régua ao lado compara os picos.</p>
+  <section class="band stone block" aria-labelledby="h-mapa" id="territorio">
+    <div class="inner">
+      <div class="block-head">
+        <div>
+          <span class="sec-num agua">02 · Território</span>
+          <h2 id="h-mapa">Áreas de drenagem e chuva</h2>
+          <p>Áreas a montante de cada estação (HydroBASINS nível 12) sobre a grade do IMERG (0,1°). As células fora da bacia de Encantado aparecem esmaecidas.</p>
+        </div>
+        <div class="ctl"><span class="lbl">Chuva</span><div class="seg" id="seg-mapa" role="group" aria-label="Camada de chuva"></div></div>
+      </div>
+      <div class="map-grid">
+        <div class="panel map-box">
+          <svg id="mapa" role="img" aria-label="Mapa das áreas de drenagem sobre a chuva do IMERG"></svg>
+          <div class="legend-ramp" id="leg-mapa"></div>
+        </div>
+        <div class="panel">
+          <div class="stations" id="stations"></div>
+          <div class="rain-sum" id="rain-sum"></div>
+        </div>
       </div>
     </div>
-    <div class="controls">
-      <div class="ctl"><span class="lbl">Estação</span><div class="seg" id="seg-est" role="group" aria-label="Estação"></div></div>
-      <div class="ctl"><span class="lbl">Evento</span><div class="seg" id="seg-ev" role="group" aria-label="Evento"></div></div>
-      <div class="ctl"><span class="lbl">Horizonte</span><div class="seg" id="seg-h" role="group" aria-label="Horizonte"></div></div>
-    </div>
-    <div class="controls">
-      <div class="chips" id="chips" role="group" aria-label="Modelos"></div>
-      <label class="toggle"><input type="checkbox" id="livre"> Mostrar também a previsão sem limites (tracejada)</label>
-    </div>
-    <div class="alert" id="ev-alert" hidden>
-      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5 15 14H1z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path><path d="M8 6v4" stroke="currentColor" stroke-width="1.5"></path><circle cx="8" cy="11.8" r=".9" fill="currentColor"></circle></svg>
-      <div id="ev-alert-txt"></div>
-    </div>
-    <div class="ev-grid">
-      <div class="panel ev-main">
-        <svg id="ev-chart" role="img" aria-label="Cota observada e prevista no evento"></svg>
-        <div class="chart-cap" id="ev-rain-cap">Chuva média na bacia de Encantado, IMERG Early (mm/h, hora local)</div>
-        <svg id="ev-rain" role="img" aria-label="Chuva IMERG na bacia"></svg>
-      </div>
-      <div class="panel ev-side">
-        <div class="eyebrow" style="padding-left:4px">Picos (cm)</div>
-        <svg id="regua" role="img" aria-label="Régua com os picos observado e previstos"></svg>
-      </div>
-    </div>
-    <div class="panel tbl-wrap"><table id="ev-table"></table></div>
   </section>
 
-  <section class="block" aria-labelledby="h-skill">
-    <div class="block-head">
-      <div>
-        <h2 id="h-skill">Ganho sobre a persistência</h2>
-        <p>Skill = 1 − MSE(modelo) / MSE(persistência), no período de teste inteiro (2023 em diante). Acima de zero, o modelo é melhor que repetir a cota atual.</p>
+  <section class="band paper block" aria-labelledby="h-ev" id="cheias">
+    <div class="inner">
+      <div class="block-head">
+        <div>
+          <span class="sec-num">03 · Cheias</span>
+          <h2 id="h-ev">Evento: observado × previsto</h2>
+          <p>Cada curva prevista está posicionada no instante previsto (t + h). A régua ao lado compara os picos.</p>
+        </div>
       </div>
-      <div class="legend" id="leg-skill"></div>
+      <div class="controls">
+        <div class="ctl"><span class="lbl">Estação</span><div class="seg" id="seg-est" role="group" aria-label="Estação"></div></div>
+        <div class="ctl"><span class="lbl">Evento</span><div class="seg" id="seg-ev" role="group" aria-label="Evento"></div></div>
+        <div class="ctl"><span class="lbl">Horizonte</span><div class="seg" id="seg-h" role="group" aria-label="Horizonte"></div></div>
+      </div>
+      <div class="controls">
+        <div class="chips" id="chips" role="group" aria-label="Modelos"></div>
+        <label class="toggle"><input type="checkbox" id="livre"> Mostrar também a previsão sem limites (tracejada)</label>
+      </div>
+      <div class="alert" id="ev-alert" hidden>
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5 15 14H1z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path><path d="M8 6v4" stroke="currentColor" stroke-width="1.5"></path><circle cx="8" cy="11.8" r=".9" fill="currentColor"></circle></svg>
+        <div id="ev-alert-txt"></div>
+      </div>
+      <div class="ev-grid">
+        <div class="panel ev-main">
+          <svg id="ev-chart" role="img" aria-label="Cota observada e prevista no evento"></svg>
+          <div class="chart-cap" id="ev-rain-cap">Chuva média na bacia de Encantado, IMERG Early (mm/h, hora local)</div>
+          <svg id="ev-rain" role="img" aria-label="Chuva IMERG na bacia"></svg>
+        </div>
+        <div class="panel ev-side">
+          <div class="eyebrow">Picos (cm)</div>
+          <svg id="regua" role="img" aria-label="Régua com os picos observado e previstos"></svg>
+        </div>
+      </div>
+      <div class="panel tbl-wrap"><table id="ev-table"></table></div>
     </div>
-    <div class="two" id="skill"></div>
   </section>
 
-  <section class="block" aria-labelledby="h-long">
-    <div class="block-head">
-      <div>
-        <h2 id="h-long">Série completa</h2>
-        <p>Cota máxima diária (dias com ao menos 25% das horas medidas). Os períodos de treino, validação e teste estão sombreados, e os eventos, marcados.</p>
+  <section class="band stone block" aria-labelledby="h-skill" id="resultado">
+    <div class="inner">
+      <div class="block-head">
+        <div>
+          <span class="sec-num verde">04 · Resultado</span>
+          <h2 id="h-skill">Ganho sobre a persistência</h2>
+          <p>Skill = 1 − MSE(modelo) / MSE(persistência), no período de teste inteiro (2023 em diante). Acima de zero, o modelo é melhor que repetir a cota atual.</p>
+        </div>
+        <div class="legend" id="leg-skill"></div>
       </div>
-      <div class="legend">
-        <span><i class="box" style="background:var(--band-train)"></i>treino</span>
-        <span><i class="box" style="background:var(--band-val)"></i>validação</span>
-        <span><i class="box" style="background:var(--surface)"></i>teste</span>
-        <span><i class="box" style="background:var(--band-ev)"></i>evento</span>
-      </div>
+      <div class="two" id="skill"></div>
     </div>
-    <div class="two" id="long"></div>
   </section>
 
-  <footer>
-    <span id="foot-cenario"></span>
-    <span>Fontes: ANA (HidroWebService, telemetria), NASA GPM IMERG Early V07 (meia-horária; usada pelo modelo e na seção Agora) e IMERG Final V07 (diária; mapa), pluviômetros telemétricos da ANA/SGB/Defesa Civil RS e previsão de chuva GFS (NOAA) e ECMWF IFS via Open-Meteo (seção Agora), HydroBASINS v1c (Lehner &amp; Grill, 2013), cotas de referência do SGB/SACE.</span>
+  <section class="band paper block" aria-labelledby="h-long" id="historico">
+    <div class="inner">
+      <div class="block-head">
+        <div>
+          <span class="sec-num agua">05 · Histórico</span>
+          <h2 id="h-long">Série completa</h2>
+          <p>Cota máxima diária (dias com ao menos 25% das horas medidas). Os períodos de treino, validação e teste estão sombreados, e os eventos, marcados.</p>
+        </div>
+        <div class="legend">
+          <span><i class="box" style="background:var(--band-train)"></i>treino</span>
+          <span><i class="box" style="background:var(--band-val)"></i>validação</span>
+          <span><i class="box" style="background:var(--surface)"></i>teste</span>
+          <span><i class="box" style="background:var(--band-ev)"></i>evento</span>
+        </div>
+      </div>
+      <div class="two" id="long"></div>
+    </div>
+  </section>
+
+  <footer id="fontes">
+    <div class="inner">
+      <span class="eyebrow">Notas e fontes</span>
+      <span id="foot-cenario"></span>
+      <span>Fontes: ANA (HidroWebService, telemetria), NASA GPM IMERG Early V07 (meia-horária; usada pelo modelo e na seção Agora) e IMERG Final V07 (diária; mapa), pluviômetros telemétricos da ANA/SGB/Defesa Civil RS e previsão de chuva GFS (NOAA) e ECMWF IFS via Open-Meteo (seção Agora), HydroBASINS v1c (Lehner &amp; Grill, 2013), cotas de referência do SGB/SACE.</span>
+    </div>
   </footer>
 </div>
 <div id="tip" hidden></div>
@@ -387,7 +466,6 @@ function seg(id, items, key, onchange) {
   });
 }
 
-/* ---------------------------------------------------------------- cabeçalho */
 function renderFacts() {
   const t = D.teste.filter(r => r.modelo !== "persistencia");
   const best = h => d3.max(t.filter(r => r.horizonte_h === h), r => r.skill_vs_persist);
@@ -402,7 +480,6 @@ function renderFacts() {
     `Cenário: ${D.cenario === "com_imerg" ? "com chuva IMERG" : "sem IMERG"}; entradas e variação prevista limitadas à faixa do treino ± ${Math.round(100 * D.margem)}% da amplitude.`;
 }
 
-/* ---------------------------------------------------------------- mapa */
 const K = Math.cos(29.2 * Math.PI / 180);
 const tx = c => typeof c[0] === "number" ? [c[0] * K, c[1]] : c.map(tx);
 const BACIAS = D.bacias.features.map(f => ({ ...f, geometry: { ...f.geometry, coordinates: tx(f.geometry.coordinates) } }))
@@ -497,7 +574,6 @@ function renderRainSum() {
      <span class="note">Média nas ${ins.length} células da bacia de Encantado. Fora dela, na mesma caixa: ${n0(meanOut)} ${L.unidade}.</span>`;
 }
 
-/* ---------------------------------------------------------------- evento */
 function eventData() {
   const E = D.eventos[`${S.est}|${S.ev}`], H = E.horizontes[S.h];
   const t0 = utc(E.inicio), T = d3.range(E.n).map(i => new Date(+t0 + i * 36e5));
@@ -649,7 +725,6 @@ function renderChips() {
   });
 }
 
-/* ---------------------------------------------------------------- skill */
 function renderSkill() {
   const host = document.getElementById("skill"); host.innerHTML = "";
   const mods = MODELOS.filter(m => m !== "persistencia");
@@ -684,7 +759,6 @@ function renderSkill() {
   });
 }
 
-/* ---------------------------------------------------------------- série longa */
 function renderLong() {
   const host = document.getElementById("long"); host.innerHTML = "";
   const L = D.serie_longa, d0 = utcD(L.inicio);
@@ -705,7 +779,7 @@ function renderLong() {
     Object.entries(D.eventos_janelas).forEach(([n, [a, b]]) => band(a, b, css("--band-ev")));
     svg.append("g").attr("class", "grid").attr("transform", `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-(W - m.l - m.r)).tickFormat(""));
     svg.append("path").attr("d", d3.line().defined(d => d[1] != null).x(d => x(d[0])).y(d => y(d[1]))(T.map((t, i) => [t, v[i]])))
-      .attr("fill", "none").attr("stroke", css("--ink-2")).attr("stroke-width", 1.1);
+      .attr("fill", "none").attr("stroke", css("--agua")).attr("stroke-width", 1.2);
     svg.append("g").attr("class", "axis").attr("transform", `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5).tickFormat(n0)).call(g => g.select("path").remove());
     svg.append("g").attr("class", "axis").attr("transform", `translate(0,${Hh - m.b})`).call(d3.axisBottom(x).ticks(d3.utcYear.every(W < 420 ? 2 : 1)).tickFormat(fAno));
     if (cod === "86720000") {
@@ -723,9 +797,8 @@ function renderLong() {
   });
 }
 
-/* ---------------------------------------------------------------- agora (ao vivo) */
 let LIVE = null, LIVE_ERR = null;
-const nowLocal = () => new Date(Date.now() + (D.ao_vivo?.utc_offset_h ?? -3) * 36e5);   // relógio local no mesmo "UTC falso" das séries
+const nowLocal = () => new Date(Date.now() + (D.ao_vivo?.utc_offset_h ?? -3) * 36e5);
 const REF_NOMES = [["atencao", "atenção"], ["alerta", "alerta"], ["inundacao", "inundação"]];
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
@@ -736,18 +809,40 @@ async function loadLive() {
       const r = await fetch(u + (u.includes("?") ? "&" : "?") + "t=" + Math.floor(Date.now() / 3e5), { cache: "no-store" });
       if (!r.ok) continue;
       const js = await r.json();
-      if (js && js.estacoes) { LIVE = js; LIVE_ERR = null; renderAgora(); return; }
+      if (js && js.estacoes) { LIVE = js; LIVE_ERR = null; renderAgora(); irParaAncora(); return; }
     } catch (e) { LIVE_ERR = e; }
   }
-  LIVE = null; renderAgora();
+  LIVE = null; renderAgora(); irParaAncora();
+}
+
+let ancoraFeita = false;
+function irParaAncora() {
+  if (ancoraFeita) return;
+  ancoraFeita = true;
+  const el = location.hash && document.querySelector(location.hash);
+  if (!el) return;
+  let mexeu = false;
+  const parar = () => { mexeu = true; };
+  ["wheel", "touchstart", "keydown", "mousedown"].forEach(t => addEventListener(t, parar, { once: true, passive: true }));
+  const vai = () => { if (!mexeu) el.scrollIntoView({ block: "start", behavior: "instant" }); };
+  vai();
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(vai);
+  [300, 800, 1600].forEach(ms => setTimeout(vai, ms));
 }
 
 function liveStatus() {
-  const el = document.getElementById("live-status");
-  if (!LIVE) { el.innerHTML = `<span class="live-dot"></span>sem conexão com os dados ao vivo`; return; }
+  const el = document.getElementById("live-status"), nav = document.getElementById("nav-live");
+  if (!LIVE) {
+    el.innerHTML = `<span class="live-dot"></span>sem conexão com os dados ao vivo`;
+    nav.innerHTML = `<span class="live-dot"></span><span class="txt">ao vivo indisponível</span>`;
+    return;
+  }
   const g = utc(LIVE.gerado_em), min = Math.round((nowLocal() - g) / 6e4);
   const quando = min < 60 ? `há ${Math.max(0, min)} min` : min < 48 * 60 ? `há ${Math.round(min / 60)} h` : `em ${fData(g)}`;
-  el.innerHTML = `<span class="live-dot ${min <= 150 ? "on" : "old"}"></span>atualizado ${quando} · ${fHora(g)} (hora local)`;
+  const estado = min <= 150 ? "on" : "old";
+  el.innerHTML = `<span class="live-dot ${estado}"></span>atualizado ${quando} · ${fHora(g)} (hora local)`;
+  nav.innerHTML = `<span class="live-dot ${estado}"></span><span class="txt">ao vivo · ${quando}</span>`;
+  nav.title = `Dados ao vivo atualizados ${quando} (${fHora(g)}, hora local)`;
 }
 
 function nivelRef(v, ref) {
@@ -806,8 +901,8 @@ function renderPluvio() {
   svg.attr("viewBox", `0 0 ${W} ${H}`).attr("width", "100%").attr("height", H).selectAll("*").remove();
   const bacia = BACIAS.find(b => b.properties.codigo === "86720000");
   const proj = d3.geoIdentity().reflectY(true).fitExtent([[10, 10], [W - 10, H - 10]], bacia);
-  svg.append("path").attr("d", d3.geoPath(proj)(bacia)).attr("fill", css("--silt")).attr("fill-opacity", .08)
-    .attr("stroke", css("--silt")).attr("stroke-width", 1.6).attr("stroke-linejoin", "round");
+  svg.append("path").attr("d", d3.geoPath(proj)(bacia)).attr("fill", css("--agua")).attr("fill-opacity", .06)
+    .attr("stroke", css("--agua")).attr("stroke-width", 1.6).attr("stroke-linejoin", "round");
   const est = P.estacoes.slice().sort((a, b) => (a.chuva_24h ?? -1) - (b.chuva_24h ?? -1));
   const vmax = Math.max(20, d3.max(est, e => e.chuva_24h) || 0);
   const r = d3.scaleSqrt().domain([0, vmax]).range([3, Math.max(10, W / 22)]);
@@ -872,7 +967,7 @@ function renderNowCard(c, e, T) {
   if (fpts.length) {
     svg.append("path").attr("d", line(fpts)).attr("fill", "none").attr("stroke", css("--silt")).attr("stroke-width", 2).attr("stroke-dasharray", "5 4");
     svg.selectAll(null).data(fpts.slice(1)).join("circle").attr("cx", d => x(d[0])).attr("cy", d => y(d[1])).attr("r", 4).attr("fill", css("--silt")).attr("stroke", css("--surface")).attr("stroke-width", 1.5);
-    svg.append("text").attr("x", x(x1) - 4).attr("y", m.t + 10).attr("text-anchor", "end").style("fill", css("--silt")).text("previsão");
+    svg.append("text").attr("x", x(x1) - 4).attr("y", m.t + 10).attr("text-anchor", "end").style("fill", css("--silt-ink")).text("previsão");
   }
   svg.append("rect").attr("x", m.l).attr("y", m.t).attr("width", W - m.l - m.r).attr("height", Hh - m.t - m.b).attr("fill", "transparent")
     .on("mousemove", ev => {
@@ -919,13 +1014,13 @@ function renderNowRain(T) {
   if (fm) bars(fd, css("--silt"), `${fm.nome} (previsto)`, .75);
   if (fm) {
     svg.append("line").attr("x1", x(agora)).attr("x2", x(agora)).attr("y1", m.t - 4).attr("y2", Hh - m.b).attr("stroke", css("--ink-3")).attr("stroke-dasharray", "3 3");
-    svg.append("text").attr("x", x(agora) + 4).attr("y", m.t - 3).style("fill", css("--silt")).text("previsão →");
+    svg.append("text").attr("x", x(agora) + 4).attr("y", m.t - 3).style("fill", css("--silt-ink")).text("previsão →");
   }
   svg.append("g").attr("class", "axis").attr("transform", `translate(0,${Hh - m.b})`).call(d3.axisBottom(x).ticks(W < 480 ? 4 : 6).tickFormat(fHora));
   svg.append("g").attr("class", "axis").attr("transform", `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(3).tickFormat(v => Number.isInteger(v) ? n0(v) : n1(v))).call(g => g.select("path").remove());
   const nomes = { bacia: "bacia inteira", antas: "Antas", taquari_sup: "Taquari sup.", guapore: "Guaporé" };
   let html = C ? Object.entries(C.acumulado_24h).map(([k, v]) => `<div><b>${n1(v)} mm</b><span>${nomes[k] || k} · últimas 24 h (72 h: ${n1(C.acumulado_72h[k])})</span></div>`).join("") : "";
-  if (P) html += Object.values(P.modelos).map(v => `<div><b style="color:${css("--silt")}">${n1(v.acumulado_24h.bacia)} mm</b><span>${esc(v.nome)} · próximas 24 h (12 h: ${n1(v.acumulado_12h.bacia)})</span></div>`).join("");
+  if (P) html += Object.values(P.modelos).map(v => `<div><b style="color:${css("--silt-ink")}">${n1(v.acumulado_24h.bacia)} mm</b><span>${esc(v.nome)} · próximas 24 h (12 h: ${n1(v.acumulado_12h.bacia)})</span></div>`).join("");
   if (ult) html += `<div><span>Satélite (IMERG) até ${fHora(ult)}; depois disso, as barras são da previsão ${fm ? esc(fm.nome) : ""}.</span></div>`;
   if (P && P.nivel !== "normal") html += `<div><span style="color:${css("--warn")}"><b style="font-size:.9rem;color:inherit">${P.nivel === "alto" ? "Chuva forte prevista" : "Atenção à chuva prevista"}</b> (≥ ${P.limiares_24h[P.nivel === "alto" ? 1 : 0]} mm em 24 h). A cota prevista ainda não considera essa chuva.</span></div>`;
   acc.innerHTML = html;
@@ -939,6 +1034,28 @@ seg("seg-ev", EVENTOS.map(e => [e, e]), "ev", renderEvento);
 seg("seg-h", D.horizontes.map(h => [String(h), `${h} h`]), "h", renderEvento);
 const lv = document.getElementById("livre"); lv.checked = S.livre; lv.onchange = () => { S.livre = lv.checked; persist(); renderEvento(); };
 renderAll();
+(function () {
+  const links = [...document.querySelectorAll(".site-nav ol a")];
+  const alvos = links.map(a => document.querySelector(a.getAttribute("href"))).filter(Boolean);
+  const prog = document.getElementById("nav-progress");
+  let raf = 0;
+  function atualiza() {
+    raf = 0;
+    const lim = 90; 
+    let atual = null;
+    alvos.forEach(el => { if (el.getBoundingClientRect().top <= lim) atual = el; });
+    if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) atual = alvos.at(-1);
+    links.forEach(a => a.setAttribute("aria-current", String(!!atual && a.getAttribute("href") === `#${atual.id}`)));
+    const at = links.find(a => a.getAttribute("aria-current") === "true");
+    if (at && at.parentElement.parentElement.scrollWidth > at.parentElement.parentElement.clientWidth)
+      at.scrollIntoView({ block: "nearest", inline: "nearest" });
+    const max = document.documentElement.scrollHeight - innerHeight;
+    prog.style.transform = `scaleX(${max > 0 ? Math.min(1, scrollY / max) : 0})`;
+  }
+  addEventListener("scroll", () => { if (!raf) raf = requestAnimationFrame(atualiza); }, { passive: true });
+  addEventListener("resize", atualiza);
+  atualiza();
+})();
 loadLive();
 setInterval(loadLive, 10 * 60e3);
 let rt; new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(renderAll, 120); }).observe(document.querySelector(".wrap"));
