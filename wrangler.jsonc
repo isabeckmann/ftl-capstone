@@ -2,7 +2,19 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "ftl-capstone",
   "compatibility_date": "2026-11-01",
+  // serve o site (web/) e dispara o workflow ao_vivo.yml de hora em hora (ver worker/index.js)
+  "main": "worker/index.js",
   "assets": {
-    "directory": "./web"
+    "directory": "./web",
+    "binding": "ASSETS"
+  },
+  "triggers": {
+    "crons": ["17 * * * *"]   // minuto 17 de cada hora (UTC), igual ao cron do workflow
+  },
+  "vars": {
+    "GITHUB_REPO": "isabeckmann/ftl-capstone",
+    "GITHUB_WORKFLOW": "ao_vivo.yml",
+    "GITHUB_REF": "main"
   }
+  // secret GITHUB_TOKEN: configurar no painel do Cloudflare ou com `npx wrangler secret put GITHUB_TOKEN`
 }

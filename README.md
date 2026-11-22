@@ -131,7 +131,9 @@ GitHub Actions (de hora em hora)
   - quando os dados passam de 3 h sem atualização;
   - quando a chuva prevista ou observada passa de **40 mm em 24 h** na bacia. No histórico, em ~46% dessas situações Muçum subiu 2 m ou mais nas 24 h seguintes.
 - **Secrets do workflow** (`.github/workflows/ao_vivo.yml`): `ANA_ID`, `ANA_SENHA`, `EARTHDATA_USER` e `EARTHDATA_PASS`.
-- **Frequência:** o cron do GitHub costuma atrasar, e as rodadas acabam saindo a cada 4–8 h. Para rodar de hora em hora de verdade, use um disparador externo (por exemplo, cron-job.org) que chame o endpoint `workflow_dispatch` com um token de escopo mínimo (Actions: read and write).
+- **Frequência:** o cron do GitHub atrasa e pula rodadas; sozinho, ele roda só 3 ou 4 vezes por dia. Por isso, quem dispara o workflow de hora em hora (minuto 17, UTC) é um **Cron Trigger do Cloudflare Workers** (`worker/index.js`). Ele chama o endpoint `workflow_dispatch` da API do GitHub. O `schedule` do workflow continua como reserva.
+  - **Token:** fine-grained PAT só deste repositório, com a permissão **Actions: Read and write**. Fica como secret `GITHUB_TOKEN` do Worker (painel do Cloudflare, em *Settings > Variables and Secrets*, ou `npx wrangler secret put GITHUB_TOKEN`). Nunca vai para o código.
+  - **Conferência:** os disparos aparecem em *Actions* com o evento `workflow_dispatch`, e as falhas do Cron Trigger aparecem nos logs do Worker.
 
 ## 6. Como reproduzir
 
@@ -219,7 +221,8 @@ O cenário com IMERG vem ligado (`USE_IMERG = True` em `src/config.py`). Os dois
 .
 ├── environment.yml, requirements-ao-vivo.txt
 ├── .github/workflows/ao_vivo.yml   # rotina horária
-├── wrangler.jsonc                  # hospedagem do site (Cloudflare Workers, pasta web/)
+├── wrangler.jsonc                  # Cloudflare Workers: site (pasta web/) e disparo horário do workflow
+├── worker/index.js                 # Worker: serve web/ e dispara ao_vivo.yml de hora em hora
 ├── src/
 │   ├── config.py                   # estações, horizontes, datas, cotas de referência
 │   ├── ana_api.py                  # cliente da API da ANA
