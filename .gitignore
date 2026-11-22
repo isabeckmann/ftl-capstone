@@ -11,6 +11,9 @@ data/processed/
 outputs/models/
 outputs/preds/
 
+# registro de dados no Zenodo (gerado por scripts/build_zenodo.py)
+zenodo/
+
 .env
 *.pyc
 

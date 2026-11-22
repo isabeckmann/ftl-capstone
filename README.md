@@ -183,6 +183,22 @@ python -m src.ao_vivo --saida web/agora.json
 python -m src.painel                       # gera web/index.html e outputs/painel/painel_taquari.html
 ```
 
+**Pasta do registro de dados no Zenodo**
+
+Depois dos notebooks 01 a 04 nos dois cenários (com e sem IMERG) e do `src.operacional`:
+
+```bash
+python scripts/build_zenodo.py
+```
+
+O script grava em `zenodo/` (fora do Git):
+- `painel_horario.parquet` e `painel_horario.csv`, o painel horário com o IMERG Early já defasado em 6 h;
+- `previsoes_teste.csv.gz`, as previsões de todos os modelos no teste;
+- `modelo_hgb.joblib`, uma cópia do modelo operacional;
+- `README.md`, uma cópia de `scripts/zenodo_README.md`, a descrição do registro em inglês, com as colunas, unidades e fontes.
+
+No fim, o script mostra o SHA-256 de cada arquivo e confere o RMSE do gradient boosting. Se algum SHA-256 mudar, atualize `scripts/zenodo_README.md`.
+
 **Notebooks** (`notebooks/`)
 
 | Notebook | O que faz |
@@ -223,6 +239,7 @@ O cenário com IMERG vem ligado (`USE_IMERG = True` em `src/config.py`). Os dois
 │   └── synthetic.py                # dados sintéticos para testar o código
 ├── operacional/                    # modelo salvo, pesos da grade, rede de pluviômetros, checagem
 ├── notebooks/
+├── scripts/                        # build_zenodo.py gera a pasta zenodo/; zenodo_README.md é o README do registro
 ├── outputs/                        # tabelas e figuras; modelos e previsões ficam fora do Git
 ├── web/                            # site estático
 └── data/                           # não versionado
