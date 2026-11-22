@@ -5,7 +5,7 @@ Uso (na raiz do projeto, depois dos notebooks 03-05):
     python -m src.painel --tag sem_imerg
 
 Saídas:
-    web/index.html                         site estático (deploy no Vercel, pasta web/)
+    web/index.html                         site estático (Cloudflare Workers, pasta web/ via wrangler.jsonc)
     outputs/painel/painel_taquari.html     mesma página, sem o cabeçalho HTML (para visualizadores embutidos)
 O template fica em src/painel_template.html.
 """
