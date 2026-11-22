@@ -10,7 +10,7 @@ O repositório tem quatro partes:
 3. uma rotina **ao vivo**, que roda de hora em hora no GitHub Actions;
 4. um painel interativo, que mostra a previsão atual, a chuva observada e prevista na bacia e os resultados da avaliação.
 
-> **Previsão experimental, de um projeto acadêmico. Não é alerta oficial.** Para decisões, siga o [SACE Taquari (SGB)](https://www.sgb.gov.br/sace/taquari/ultimo_boletim.php) e a Defesa Civil (telefone 199).
+> **Previsão experimental, de um projeto acadêmico. Não é alerta oficial.** Para decisões, siga o [SACE Taquari (SGB)](https://sace.sgb.gov.br/index_bacias_monitoradas.php?getbacia=btaquari) e a Defesa Civil (telefone 199).
 
 ---
 
