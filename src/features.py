@@ -92,8 +92,8 @@ def tabular_features(panel: pd.DataFrame, lags=None, rain_windows=None) -> pd.Da
     for c in rain_cols:
         for w in rain_windows:
             F[f"{c}_s{w}h"] = panel[c].rolling(w, min_periods=max(1, int(0.8 * w))).sum()
-    for c in [c for c in panel.columns if c.startswith("imerg_")]:      # acumulados diários do IMERG (já alinhados)
-        F[c] = panel[c]
+    for c in [c for c in panel.columns if c.startswith(("imerg_", "prev_"))]:   # já alinhados: IMERG diário e chuva
+        F[c] = panel[c]                                                         # prevista (src.chuva_prevista)
     return pd.DataFrame(F, index=panel.index)
 
 
