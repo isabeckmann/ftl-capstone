@@ -1,0 +1,256 @@
+{
+ "estacoes": [
+  {
+   "codigo": "86095100",
+   "nome": "Bom Jesus/Jaquirana",
+   "operadora": "DCRS",
+   "lat": -28.7986,
+   "lon": -50.4297
+  },
+  {
+   "codigo": "86507220",
+   "nome": "Cotiporã/Dois Lajeados",
+   "operadora": "DCRS",
+   "lat": -28.9956,
+   "lon": -51.7544
+  },
+  {
+   "codigo": "2951010",
+   "nome": "Encantado",
+   "operadora": "SGB-CPRM",
+   "lat": -29.2378,
+   "lon": -51.8594
+  },
+  {
+   "codigo": "2851159",
+   "nome": "Flores da Cunha-Antônio Prado",
+   "operadora": "DCRS",
+   "lat": -28.9422,
+   "lon": -51.1897
+  },
+  {
+   "codigo": "2851044",
+   "nome": "Guaporé",
+   "operadora": "SGB-CPRM",
+   "lat": -28.8444,
+   "lon": -51.8792
+  },
+  {
+   "codigo": "2851160",
+   "nome": "Guaporé-Anta Gorda",
+   "operadora": "DCRS",
+   "lat": -28.9108,
+   "lon": -51.9522
+  },
+  {
+   "codigo": "2851072",
+   "nome": "Ibiraiaras",
+   "operadora": "SGB-CPRM",
+   "lat": -28.3811,
+   "lon": -51.6331
+  },
+  {
+   "codigo": "86560000",
+   "nome": "Linha Colombo",
+   "operadora": "SGB-CPRM",
+   "lat": -28.9122,
+   "lon": -51.9531
+  },
+  {
+   "codigo": "2951092",
+   "nome": "Linha José Júlio",
+   "operadora": "SGB-CPRM",
+   "lat": -29.0978,
+   "lon": -51.6997
+  },
+  {
+   "codigo": "2852082",
+   "nome": "Marau",
+   "operadora": "DCRS",
+   "lat": -28.4569,
+   "lon": -52.1892
+  },
+  {
+   "codigo": "2951070",
+   "nome": "Muçum",
+   "operadora": "SGB-CPRM",
+   "lat": -29.1672,
+   "lon": -51.8686
+  },
+  {
+   "codigo": "86581000",
+   "nome": "Muçum/Encantado",
+   "operadora": "DCRS",
+   "lat": -29.1683,
+   "lon": -51.8875
+  },
+  {
+   "codigo": "2951164",
+   "nome": "Nova Roma/Farroupilha",
+   "operadora": "DCRS",
+   "lat": -29.0575,
+   "lon": -51.3961
+  },
+  {
+   "codigo": "86500000",
+   "nome": "Passo Carreiro",
+   "operadora": "SGB-CPRM",
+   "lat": -28.8489,
+   "lon": -51.8325
+  },
+  {
+   "codigo": "2850047",
+   "nome": "Passo Tainhas",
+   "operadora": "SGB-CPRM",
+   "lat": -28.8681,
+   "lon": -50.4561
+  },
+  {
+   "codigo": "2851158",
+   "nome": "Protásio Alves/Ipê",
+   "operadora": "DCRS",
+   "lat": -28.7383,
+   "lon": -51.4258
+  },
+  {
+   "codigo": "2952069",
+   "nome": "Putinga",
+   "operadora": "DCRS",
+   "lat": -28.7383,
+   "lon": -51.4258
+  },
+  {
+   "codigo": "2951150",
+   "nome": "Santa Tereza",
+   "operadora": "SGB-CPRM",
+   "lat": -29.1781,
+   "lon": -51.7322
+  },
+  {
+   "codigo": "2950127",
+   "nome": "São Francisco de Paula-Cambará do Sul",
+   "operadora": "DCRS",
+   "lat": -29.2647,
+   "lon": -50.3147
+  },
+  {
+   "codigo": "2951083",
+   "nome": "UHE 14 de Julho (jusante)",
+   "operadora": "CERAN",
+   "lat": -29.0797,
+   "lon": -51.6814
+  },
+  {
+   "codigo": "2951082",
+   "nome": "UHE Monte Claro (jusante)",
+   "operadora": "CERAN",
+   "lat": -29.075,
+   "lon": -51.5239
+  },
+  {
+   "codigo": "2852084",
+   "nome": "União da Serra",
+   "operadora": "DCRS",
+   "lat": -28.7194,
+   "lon": -52.0831
+  }
+ ],
+ "pesos": {
+  "bacia": [
+   0.092,
+   0.0287,
+   0.0057,
+   0.1321,
+   0.0173,
+   0.0115,
+   0.1211,
+   0.0229,
+   0.0057,
+   0.0692,
+   0.0057,
+   0.0172,
+   0.0344,
+   0.0345,
+   0.1033,
+   0.1266,
+   0.0,
+   0.0229,
+   0.0744,
+   0.0057,
+   0.0229,
+   0.046
+  ],
+  "antas": [
+   0.1357,
+   0.0085,
+   0.0,
+   0.1948,
+   0.0,
+   0.0,
+   0.1106,
+   0.0,
+   0.0084,
+   0.0,
+   0.0,
+   0.0,
+   0.0507,
+   0.0,
+   0.1524,
+   0.1868,
+   0.0,
+   0.0,
+   0.1098,
+   0.0085,
+   0.0338,
+   0.0
+  ],
+  "taquari_sup": [
+   0.0,
+   0.0767,
+   0.0,
+   0.0,
+   0.0769,
+   0.0,
+   0.3085,
+   0.0,
+   0.0,
+   0.0771,
+   0.0383,
+   0.0,
+   0.0,
+   0.2306,
+   0.0,
+   0.0,
+   0.0,
+   0.1148,
+   0.0,
+   0.0,
+   0.0,
+   0.077
+  ],
+  "guapore": [
+   0.0,
+   0.0665,
+   0.0332,
+   0.0,
+   0.0333,
+   0.0666,
+   0.0,
+   0.1331,
+   0.0,
+   0.3343,
+   0.0,
+   0.0997,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0332,
+   0.0,
+   0.0,
+   0.0,
+   0.2001
+  ]
+ }
+}

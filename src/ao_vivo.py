@@ -1,4 +1,4 @@
-"""Rotina ao vivo: coleta ANA + IMERG Early, prevê a cota em +6, +8 e +12 h e grava um JSON para o site.
+"""Rotina ao vivo: coleta ANA + pluviômetros da bacia + IMERG Early + chuva prevista (GFS/ECMWF), prevê a cota em +6, +8 e +12 h e grava um JSON para o site.
 
 Roda de hora em hora no GitHub Actions (.github/workflows/ao_vivo.yml), mas também funciona localmente:
     python -m src.ao_vivo --saida web/agora.json [--historico previsoes.csv]
@@ -89,6 +89,13 @@ def coletar_imerg(horas: int = 84, workers: int = 8) -> pd.DataFrame:
     return s.dropna(how="all")
 
 
+def coletar_prevista() -> dict:
+    """Chuva prevista (GFS e ECMWF via Open-Meteo) por sub-bacia: {modelo: DataFrame, índice = fim da hora UTC}."""
+    from .chuva_prevista import prevista_agora
+
+    return prevista_agora()
+
+
 # ----------------------------------------------------------------------------- previsão
 def _hora_ref(panel: pd.DataFrame, alvo: str, ultima_leitura) -> pd.Timestamp | None:
     """Última hora COMPLETA com cota válida (a hora h vai de h a h+1; a média de uma hora pela metade é enviesada)."""
@@ -134,7 +141,39 @@ def _iso(t):
     return None if t is None or pd.isna(t) else pd.Timestamp(t).strftime("%Y-%m-%dT%H:%M")
 
 
-def montar_json(panel, chuva_utc, prev, ultimas, modelo, avisos) -> dict:
+NOMES_MODELOS = {"gfs_seamless": "GFS (NOAA)", "ecmwf_ifs025": "ECMWF"}
+LIMIARES_24H = (40, 80)
+"""mm previstos em 24 h na bacia. No histórico (IMERG 2018–2026), com >= 40 mm em 24 h Muçum subiu 2 m ou mais nas
+24 h seguintes em ~46% das vezes; com >= 80 mm, em ~62%."""
+
+
+def resumo_prevista(prevista: dict, imerg_ultima_utc, idx_local) -> dict | None:
+    """Acumulados previstos e série horária da bacia (para o gráfico), em hora local (rótulo = início da hora)."""
+    if not prevista:
+        return None
+    agora = pd.Timestamp.now(tz="UTC").tz_localize(None)
+    off = pd.Timedelta(hours=config.LOCAL_UTC_OFFSET_HOURS)
+    modelos = {}
+    for m, df in prevista.items():
+        fut = df[df.index > agora]                       # horas que terminam depois de agora
+        rec = df[(df.index <= agora) & (df.index > (imerg_ultima_utc if imerg_ultima_utc is not None
+                                                     else agora - pd.Timedelta(hours=6)))]
+        loc = df.copy()
+        loc.index = loc.index - pd.Timedelta(hours=1) + off
+        ini = idx_local[0]
+        serie = loc["bacia"].loc[ini:ini + pd.Timedelta(hours=len(idx_local) + 47)]
+        modelos[m] = {"nome": NOMES_MODELOS.get(m, m), "inicio": _iso(serie.index.min()), "bacia": _r(serie.values, 1),
+                      "acumulado_12h": {k: round(float(fut[k].iloc[:12].sum()), 1) for k in df.columns},
+                      "acumulado_24h": {k: round(float(fut[k].iloc[:24].sum()), 1) for k in df.columns},
+                      "recente_sem_imerg": {k: round(float(rec[k].sum()), 1) for k in df.columns},
+                      "primeira_hora_futura": _iso(fut.index.min() - pd.Timedelta(hours=1) + off) if len(fut) else None}
+    p24 = max(v["acumulado_24h"]["bacia"] for v in modelos.values())
+    nivel = "alto" if p24 >= LIMIARES_24H[1] else "atencao" if p24 >= LIMIARES_24H[0] else "normal"
+    return {"modelos": modelos, "nivel": nivel, "max_24h_bacia": p24, "limiares_24h": list(LIMIARES_24H),
+            "fonte": "Open-Meteo (GFS 0,25° e ECMWF IFS 0,25°), média ponderada dos pontos de grade na bacia"}
+
+
+def montar_json(panel, chuva_utc, prev, ultimas, modelo, avisos, prevista=None, pluvio=None) -> dict:
     agora = pd.Timestamp.now(tz="America/Sao_Paulo").tz_localize(None)
     fim = panel.index.max()
     idx = pd.date_range(fim - pd.Timedelta(hours=HORAS_GRAFICO - 1), fim, freq="h")
@@ -162,8 +201,19 @@ def montar_json(panel, chuva_utc, prev, ultimas, modelo, avisos) -> dict:
                  "ultima_hora": _iso(ult),
                  "acumulado_24h": {k: round(float(loc[k].loc[ult - pd.Timedelta(hours=23):].sum()), 1) for k in loc.columns},
                  "acumulado_72h": {k: round(float(loc[k].loc[ult - pd.Timedelta(hours=71):].sum()), 1) for k in loc.columns}}
+    imerg_ult = chuva_utc.index.max() if chuva_utc is not None and len(chuva_utc) else None
+    chuva_prev = resumo_prevista(prevista, imerg_ult, idx)
+    if pluvio and (pluvio["acumulado_24h"].get("bacia") or 0) >= LIMIARES_24H[0]:
+        avisos = avisos + [f"Os pluviômetros registraram {pluvio['acumulado_24h']['bacia']:.0f} mm em 24 h na bacia "
+                           f"(até {pluvio['ultima_hora'][11:16]}). Parte dessa chuva ainda não aparece no satélite."]
+    if chuva_prev and chuva_prev["nivel"] != "normal":
+        avisos = avisos + [f"Chuva prevista de até {chuva_prev['max_24h_bacia']:.0f} mm em 24 h na bacia. Com 40 mm ou "
+                           "mais, no histórico o rio subiu 2 m ou mais em Muçum em cerca de metade das vezes — e a "
+                           "previsão de cota acima ainda NÃO considera essa chuva futura."]
     return {"gerado_em": _iso(agora), "fuso": "UTC-3", "inicio": _iso(idx[0]), "n": len(idx),
-            "horizontes": modelo["horizontes"], "estacoes": est, "chuva": chuva, "avisos": avisos,
+            "horizontes": modelo["horizontes"], "estacoes": est, "chuva": chuva, "chuva_prevista": chuva_prev,
+            "pluviometros": pluvio,
+            "avisos": avisos,
             "modelo": {"tipo": "gradient boosting (HGB) + IMERG Early",
                        "treino_fim": min(v["treino_fim"] for v in modelo["estacoes"].values())[:10],
                        "latencia_imerg_h": modelo["latencia_imerg_h"]}}
@@ -210,8 +260,20 @@ def rodar(saida, historico=None):
     else:
         for k in ("bacia", "antas", "taquari_sup", "guapore"):
             panel[f"chuva_imerg_{k}"] = np.nan
+    try:
+        prevista = coletar_prevista()
+    except Exception as exc:  # noqa: BLE001
+        prevista = {}
+        avisos.append(f"Previsão de chuva (Open-Meteo) indisponível ({type(exc).__name__}).")
+    try:
+        from . import pluviometros
+
+        pluvio = pluviometros.resumo(pluviometros.coletar())
+    except Exception as exc:  # noqa: BLE001
+        pluvio = None
+        avisos.append(f"Pluviômetros da bacia indisponíveis ({type(exc).__name__}).")
     prev = prever(panel, modelo, ultimas)
-    js = montar_json(panel, chuva, prev, ultimas, modelo, avisos)
+    js = montar_json(panel, chuva, prev, ultimas, modelo, avisos, prevista, pluvio)
     Path(saida).parent.mkdir(parents=True, exist_ok=True)
     Path(saida).write_text(json.dumps(js, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     if historico:
@@ -232,4 +294,13 @@ if __name__ == "__main__":
         elif e.get("erro"):
             print(f"{e['nome']}: {e['erro']}")
     print("chuva IMERG até:", js["chuva"] and js["chuva"]["ultima_hora"], "| avisos:", js["avisos"])
+    pl = js.get("pluviometros")
+    if pl:
+        print(f"pluviômetros ({pl['n_estacoes']}/{pl['n_rede']} estações, até {pl['ultima_hora']}): bacia 6 h "
+              f"{pl['acumulado_6h']['bacia']} mm, 24 h {pl['acumulado_24h']['bacia']} mm")
+    cp = js.get("chuva_prevista")
+    if cp:
+        for m, v in cp["modelos"].items():
+            print(f"chuva prevista {v['nome']}: 12 h {v['acumulado_12h']['bacia']} mm, 24 h {v['acumulado_24h']['bacia']} mm"
+                  f" (recente sem IMERG: {v['recente_sem_imerg']['bacia']} mm) | nível: {cp['nivel']}")
     print("Pronto:", a.saida)
