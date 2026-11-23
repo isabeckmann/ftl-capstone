@@ -11,6 +11,10 @@
   "triggers": {
     "crons": ["17 * * * *"]   // minuto 17 de cada hora (UTC), igual ao cron do workflow
   },
+  // grava os logs (inclusive erros do evento agendado) em Observability > Logs
+  "observability": {
+    "enabled": true
+  },
   "vars": {
     "GITHUB_REPO": "isabeckmann/ftl-capstone",
     "GITHUB_WORKFLOW": "ao_vivo.yml",
