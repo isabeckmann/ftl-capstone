@@ -1,18 +1,27 @@
-"""Gera o painel interativo (HTML único, sem servidor) com bacias, chuva IMERG, eventos e métricas.
+"""Gera o painel interativo (site estático, sem servidor) com bacias, chuva IMERG, eventos e métricas.
 
 Uso (na raiz do projeto, depois dos notebooks 03-05):
     python -m src.painel                      # cenário com_imerg
     python -m src.painel --tag sem_imerg
 
+Fonte (editar aqui):
+    src/painel_web/index.html    estrutura da página
+    src/painel_web/estilo.css    estilos
+    src/painel_web/painel.js     gráficos e interação (D3.js); lê os dados de window.DADOS
+
 Saídas:
-    web/index.html                         site estático (Cloudflare Workers, pasta web/ via wrangler.jsonc)
-    outputs/painel/painel_taquari.html     mesma página, sem o cabeçalho HTML (para visualizadores embutidos)
-O template fica em src/painel_template.html.
+    web/index.html, web/estilo.css, web/painel.js, web/dados.js
+                                           site estático (Cloudflare Workers, pasta web/ via wrangler.jsonc);
+                                           dados.js traz os dados da avaliação histórica (window.DADOS)
+    outputs/painel/painel_taquari.html     mesma página num arquivo só, com CSS, JS e dados embutidos e sem o
+                                           cabeçalho HTML (para visualizadores embutidos)
 """
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import re
 from pathlib import Path
 
 import numpy as np
@@ -20,18 +29,10 @@ import pandas as pd
 
 from . import config, imerg, metrics, pipeline
 
-TEMPLATE = Path(__file__).with_name("painel_template.html")
+FONTE = Path(__file__).with_name("painel_web")
 OUT = config.OUTPUTS / "painel" / "painel_taquari.html"
-WEB = config.ROOT / "web" / "index.html"
-_HEAD = """<!doctype html>
-<html lang="pt-BR">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Previsão de curto prazo da cota do rio Taquari (Muçum e Encantado) com dados da ANA e chuva de satélite IMERG.">
-<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
-"""
+WEB = config.ROOT / "web"
+ARQUIVOS = ("estilo.css", "painel.js")             # copiados para web/ como estão
 MODELOS = ["persistencia", "ridge", "hgb", "mlp", "gru"]
 
 
@@ -156,17 +157,29 @@ def build(tag="com_imerg", out=OUT, web=WEB):
         "ao_vivo": {"urls": [config.AO_VIVO_URL] if getattr(config, "AO_VIVO_URL", None) else [],
                     "utc_offset_h": config.LOCAL_UTC_OFFSET_HOURS},
     }
-    html = TEMPLATE.read_text(encoding="utf-8").replace("/*__DADOS__*/null",
-                                                         json.dumps(payload, ensure_ascii=False, separators=(",", ":")))
+    dados = "window.DADOS = " + json.dumps(payload, ensure_ascii=False, separators=(",", ":")) + ";\n"
+    html = (FONTE / "index.html").read_text(encoding="utf-8")
+    textos = {n: (FONTE / n).read_text(encoding="utf-8") for n in ARQUIVOS} | {"dados.js": dados}
+
+    if web:                                    # site: arquivos separados, sem metadados de visualizador embutido
+        web = Path(web)
+        web.mkdir(parents=True, exist_ok=True)
+        for nome, txt in textos.items():
+            (web / nome).write_text(txt, encoding="utf-8")
+        # ?v=<hash> muda a cada versão: o navegador não reaproveita um CSS/JS antigo do cache depois do deploy
+        site = re.sub(r'(href|src)="(estilo\.css|painel\.js|dados\.js)"',
+                      lambda m: f'{m[1]}="{m[2]}?v={hashlib.sha1(textos[m[2]].encode()).hexdigest()[:10]}"', html)
+        site = "\n".join(l for l in site.splitlines() if 'name="claude:' not in l) + "\n"
+        (web / "index.html").write_text(site, encoding="utf-8")
+
+    # arquivo único: conteúdo de <head> e <body>, com CSS, dados e JS embutidos
+    um = re.sub(r"(?s).*?<head>\n|</head>\n<body>\n|</body>\n</html>\n?$", "", html)
+    um = um.replace('<link rel="stylesheet" href="estilo.css">', "<style>\n" + textos["estilo.css"] + "</style>")
+    for nome in ("dados.js", "painel.js"):
+        um = um.replace(f'<script src="{nome}"></script>', "<script>\n" + textos[nome] + "</script>")
     out = Path(out)
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(html, encoding="utf-8")
-    if web:                                    # documento completo, sem metadados de visualizador embutido
-        body = "\n".join(l for l in html.splitlines() if 'name="claude:' not in l)
-        web = Path(web)
-        web.parent.mkdir(parents=True, exist_ok=True)
-        web.write_text(_HEAD + body.replace("<div class=\"wrap\">", "</head>\n<body>\n<div class=\"wrap\">", 1)
-                       + "\n</body>\n</html>\n", encoding="utf-8")
+    out.write_text(um, encoding="utf-8")
     return out
 
 
@@ -176,4 +189,4 @@ if __name__ == "__main__":
     ap.add_argument("--out", default=str(OUT))
     a = ap.parse_args()
     p = build(a.tag, a.out)
-    print(f"Pronto: {p} ({p.stat().st_size / 1e6:.1f} MB) e {WEB}")
+    print(f"Pronto: {p} ({p.stat().st_size / 1e6:.1f} MB) e {WEB}/ (index.html, estilo.css, painel.js, dados.js)")

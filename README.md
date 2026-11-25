@@ -183,7 +183,7 @@ python -m src.experimento_chuva_prevista
 
 ```bash
 python -m src.ao_vivo --saida web/agora.json
-python -m src.painel                       # gera web/index.html e outputs/painel/painel_taquari.html
+python -m src.painel                       # gera web/ (index.html, estilo.css, painel.js, dados.js) e outputs/painel/painel_taquari.html
 ```
 
 **Pasta do registro de dados no Zenodo**
@@ -239,7 +239,8 @@ O cenário com IMERG vem ligado (`USE_IMERG = True` em `src/config.py`). Os dois
 │   ├── chuva_prevista.py           # previsão de chuva GFS/ECMWF (Open-Meteo)
 │   ├── pluviometros.py             # rede de pluviômetros e médias de Thiessen
 │   ├── experimento_chuva_prevista.py
-│   ├── painel.py, painel_template.html   # painel interativo (D3.js)
+│   ├── painel.py                   # gera o painel interativo (D3.js) em web/
+│   ├── painel_web/                 # fonte do painel: index.html, estilo.css, painel.js
 │   └── synthetic.py                # dados sintéticos para testar o código
 ├── operacional/                    # modelo salvo, pesos da grade, rede de pluviômetros, checagem
 ├── notebooks/

@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Previsão de curto prazo da cota do rio Taquari (Muçum e Encantado) com dados da ANA e chuva de satélite IMERG.">
+<title>Cheias do Taquari</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<div class="wrap">
+  <nav class="site-nav" aria-label="Seções da página">
+    <div class="bar">
+      <a class="brand" href="#topo">Cheias do Taquari</a>
+      <ol>
+        <li><a href="#agora"><span>01</span>Agora</a></li>
+        <li><a href="#conferencia"><span>02</span>Conferência</a></li>
+        <li><a href="#territorio"><span>03</span>Território</a></li>
+        <li><a href="#cheias"><span>04</span>Cheias</a></li>
+        <li><a href="#resultado"><span>05</span>Resultado</a></li>
+        <li><a href="#historico"><span>06</span>Histórico</a></li>
+        <li><a href="#fontes"><span>·</span>Fontes</a></li>
+      </ol>
+      <a class="nav-live" href="#agora" id="nav-live"><span class="live-dot"></span><span class="txt">ao vivo</span></a>
+    </div>
+    <div class="progress" id="nav-progress" aria-hidden="true"></div>
+  </nav>
+  <header class="top" id="topo">
+    <div class="inner">
+      <div class="kicker">Rio Taquari · RS · estudo de caso</div>
+      <h1>Cheias do Taquari</h1>
+      <p class="lede" id="lede">Previsão da cota em Muçum e Encantado, avaliada nas cheias de 2023 e 2024.</p>
+      <div class="meta">
+        <div><span class="lbl">Autoria</span>Isadora Beckmann · Future Tech Leaders Brasil, Space Tech Bootcamp 2026</div>
+        <div><span class="lbl">Recorte</span>Bacia do Taquari-Antas até Encantado (19.193 km²) · 2018 a 2026 · horizontes de 6 a 12 h</div>
+        <div><span class="lbl">Fontes</span>ANA (telemetria), NASA GPM IMERG, HydroBASINS, Open-Meteo (GFS/ECMWF), SGB/SACE</div>
+      </div>
+      <div class="repo-links">
+        <span class="lbl">Código e dados</span>
+        <a href="https://github.com/isabeckmann/ftl-capstone" target="_blank" rel="noopener">GitHub ↗</a>
+        <a href="https://doi.org/10.5281/zenodo.24446019" target="_blank" rel="noopener">código no Zenodo ↗</a>
+        <a href="https://doi.org/10.5281/zenodo.24446327" target="_blank" rel="noopener">dados no Zenodo ↗</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="band agua facts-band">
+    <div class="inner">
+      <div class="eyebrow">O estudo em três números</div>
+      <div class="facts" id="facts"></div>
+    </div>
+  </div>
+
+  <section class="band paper block" aria-labelledby="h-agora" id="agora">
+    <div class="inner">
+      <div class="block-head">
+        <div>
+          <span class="sec-num">01 · Monitoramento</span>
+          <h2 id="h-agora">Agora</h2>
+          <p>Últimas leituras da ANA, chuva dos pluviômetros da bacia, do satélite IMERG Early e chuva prevista (GFS e ECMWF), com a cota prevista para as próximas 6, 8 e 12 horas. Atualiza de hora em hora.</p>
+        </div>
+        <div class="live-status" id="live-status"><span class="live-dot"></span>carregando…</div>
+      </div>
+      <div class="alert" role="note">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5 15 14H1z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path><path d="M8 6v4" stroke="currentColor" stroke-width="1.5"></path><circle cx="8" cy="11.8" r=".9" fill="currentColor"></circle></svg>
+        <div><b>Previsão experimental, de um projeto acadêmico. Não é alerta oficial.</b> Em cheias extremas o modelo tende a exagerar o pico. Para decisões, siga o <a href="https://sace.sgb.gov.br/index_bacias_monitoradas.php?getbacia=btaquari" target="_blank" rel="noopener">SACE Taquari (SGB)</a> e a Defesa Civil (telefone 199).</div>
+      </div>
+      <div class="alert" id="live-avisos" hidden>
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"></circle><path d="M8 4.5v4.5" stroke="currentColor" stroke-width="1.5"></path><circle cx="8" cy="11.5" r=".9" fill="currentColor"></circle></svg>
+        <div id="live-avisos-txt"></div>
+      </div>
+      <div id="live-body"><div class="panel live-off">Carregando os dados ao vivo…</div></div>
+    </div>
+  </section>
+
+  <section class="band stone block" aria-labelledby="h-conf" id="conferencia">
+    <div class="inner">
+      <div class="block-head">
+        <div>
+          <span class="sec-num">02 · Conferência</span>
+          <h2 id="h-conf">Previsto × observado, ao vivo</h2>
+          <p>Cada previsão feita pela rotina horária é guardada e, quando a hora prevista chega, comparada com a cota que a ANA mediu. É a avaliação fora da amostra, em tempo real, das mesmas previsões mostradas acima.</p>
+        </div>
+      </div>
+      <div class="controls">
+        <div class="ctl"><span class="lbl">Horizonte</span><div class="seg" id="seg-vh" role="group" aria-label="Horizonte da conferência"></div></div>
+        <div class="legend"><span><i style="--c:var(--ink)"></i>observado</span><span><i class="dot" style="--c:var(--silt)"></i>previsto para aquela hora</span></div>
+      </div>
+      <div id="conf-body"><div class="panel live-off">Carregando os dados ao vivo…</div></div>
+    </div>
+  </section>
+
+  <section class="band paper block" aria-labelledby="h-mapa" id="territorio">
+    <div class="inner">
+      <div class="block-head">
+        <div>
+          <span class="sec-num agua">03 · Território</span>
+          <h2 id="h-mapa">Áreas de drenagem e chuva</h2>
+          <p>Áreas a montante de cada estação (HydroBASINS nível 12) sobre a grade do IMERG (0,1°). As células fora da bacia de Encantado aparecem esmaecidas.</p>
+        </div>
+        <div class="ctl"><span class="lbl">Chuva</span><div class="seg" id="seg-mapa" role="group" aria-label="Camada de chuva"></div></div>
+      </div>
+      <div class="map-grid">
+        <div class="panel map-box">
+          <svg id="mapa" role="img" aria-label="Mapa das áreas de drenagem sobre a chuva do IMERG"></svg>
+          <div class="legend-ramp" id="leg-mapa"></div>
+        </div>
+        <div class="panel">
+          <div class="stations" id="stations"></div>
+          <div class="rain-sum" id="rain-sum"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band stone block" aria-labelledby="h-ev" id="cheias">
+    <div class="inner">
+      <div class="block-head">
+        <div>
+          <span class="sec-num">04 · Cheias</span>
+          <h2 id="h-ev">Evento: observado × previsto</h2>
+          <p>Cada curva prevista está posicionada no instante previsto (t + h). A régua ao lado compara os picos.</p>
+        </div>
+      </div>
+      <div class="controls">
+        <div class="ctl"><span class="lbl">Estação</span><div class="seg" id="seg-est" role="group" aria-label="Estação"></div></div>
+        <div class="ctl"><span class="lbl">Evento</span><div class="seg" id="seg-ev" role="group" aria-label="Evento"></div></div>
+        <div class="ctl"><span class="lbl">Horizonte</span><div class="seg" id="seg-h" role="group" aria-label="Horizonte"></div></div>
+      </div>
+      <div class="controls">
+        <div class="chips" id="chips" role="group" aria-label="Modelos"></div>
+        <label class="toggle"><input type="checkbox" id="livre"> Mostrar também a previsão sem limites (tracejada)</label>
+      </div>
+      <div class="alert" id="ev-alert" hidden>
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5 15 14H1z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path><path d="M8 6v4" stroke="currentColor" stroke-width="1.5"></path><circle cx="8" cy="11.8" r=".9" fill="currentColor"></circle></svg>
+        <div id="ev-alert-txt"></div>
+      </div>
+      <div class="ev-grid">
+        <div class="panel ev-main">
+          <svg id="ev-chart" role="img" aria-label="Cota observada e prevista no evento"></svg>
+          <div class="chart-cap" id="ev-rain-cap">Chuva média na bacia de Encantado, IMERG Early (mm/h, hora local)</div>
+          <svg id="ev-rain" role="img" aria-label="Chuva IMERG na bacia"></svg>
+        </div>
+        <div class="panel ev-side">
+          <div class="eyebrow">Picos (cm)</div>
+          <svg id="regua" role="img" aria-label="Régua com os picos observado e previstos"></svg>
+        </div>
+      </div>
+      <div class="panel tbl-wrap"><table id="ev-table"></table></div>
+    </div>
+  </section>
+
+  <section class="band paper block" aria-labelledby="h-skill" id="resultado">
+    <div class="inner">
+      <div class="block-head">
+        <div>
+          <span class="sec-num verde">05 · Resultado</span>
+          <h2 id="h-skill">Ganho sobre a persistência</h2>
+          <p>Skill = 1 − MSE(modelo) / MSE(persistência), no período de teste inteiro (2023 em diante). Acima de zero, o modelo é melhor que repetir a cota atual.</p>
+        </div>
+        <div class="legend" id="leg-skill"></div>
+      </div>
+      <div class="two" id="skill"></div>
+    </div>
+  </section>
+
+  <section class="band stone block" aria-labelledby="h-long" id="historico">
+    <div class="inner">
+      <div class="block-head">
+        <div>
+          <span class="sec-num agua">06 · Histórico</span>
+          <h2 id="h-long">Série completa</h2>
+          <p>Cota máxima diária (dias com ao menos 25% das horas medidas). Os períodos de treino, validação e teste estão sombreados, e os eventos, marcados.</p>
+        </div>
+        <div class="legend">
+          <span><i class="box" style="background:var(--band-train)"></i>treino</span>
+          <span><i class="box" style="background:var(--band-val)"></i>validação</span>
+          <span><i class="box" style="background:var(--surface)"></i>teste</span>
+          <span><i class="box" style="background:var(--band-ev)"></i>evento</span>
+        </div>
+      </div>
+      <div class="two" id="long"></div>
+    </div>
+  </section>
+
+  <footer id="fontes">
+    <div class="inner">
+      <span class="eyebrow">Código e dados abertos</span>
+      <div class="links">
+        <div><b>Repositório</b><a href="https://github.com/isabeckmann/ftl-capstone" target="_blank" rel="noopener">github.com/isabeckmann/ftl-capstone</a></div>
+        <div><b>Código arquivado</b><a href="https://doi.org/10.5281/zenodo.24446019" target="_blank" rel="noopener">doi:10.5281/zenodo.24446019</a></div>
+        <div><b>Dados, previsões e modelo (CC BY 4.0)</b><a href="https://doi.org/10.5281/zenodo.24446327" target="_blank" rel="noopener">doi:10.5281/zenodo.24446327</a></div>
+      </div>
+      <span class="eyebrow">Notas e fontes</span>
+      <span id="foot-cenario"></span>
+      <span>Fontes: ANA (HidroWebService, telemetria), NASA GPM IMERG Early V07 (meia-horária; usada pelo modelo e na seção Agora) e IMERG Final V07 (diária; mapa), pluviômetros telemétricos da ANA/SGB/Defesa Civil RS e previsão de chuva GFS (NOAA) e ECMWF IFS via Open-Meteo (seção Agora), HydroBASINS v1c (Lehner &amp; Grill, 2013), cotas de referência do SGB/SACE.</span>
+    </div>
+  </footer>
+</div>
+<div id="tip" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="dados.js"></script>
+<script src="painel.js"></script>
+</body>
+</html>
