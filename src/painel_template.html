@@ -87,6 +87,9 @@ header.top .lede { font-family: var(--f-display); font-size: clamp(1.2rem, 2.2vw
 .meta { margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--rule); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px 32px; }
 .meta div { display: flex; flex-direction: column; gap: 2px; font-size: .9rem; color: var(--ink-2); line-height: 1.45; }
 .meta dt, .meta .lbl { font: 500 .68rem var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.repo-links { margin-top: 16px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 22px; font: .8rem var(--f-mono); color: var(--ink-3); }
+.repo-links .lbl { font-size: .68rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; }
+.repo-links a { white-space: nowrap; }
 
 /* faixa azul-petróleo com os números do estudo */
 .facts-band .inner { gap: 18px; }
@@ -202,6 +205,11 @@ footer .eyebrow { color: var(--ocre); }
 footer span { max-width: 90ch; }
 footer a { color: var(--paper); text-decoration-color: color-mix(in srgb, var(--paper) 50%, transparent); }
 footer a:hover { color: var(--ocre); text-decoration-color: var(--ocre); }
+footer .links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 32px; margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid color-mix(in srgb, var(--paper) 22%, transparent); }
+footer .links div { display: flex; flex-direction: column; gap: 2px; }
+footer .links b { font: 500 .68rem var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: color-mix(in srgb, var(--paper) 65%, transparent); }
+footer .links a { font-family: var(--f-mono); font-size: .84rem; overflow-wrap: anywhere; }
+@media (max-width: 900px) { footer .links { grid-template-columns: 1fr; } }
 
 /* ---------- agora (ao vivo) */
 .live-status { display: inline-flex; align-items: center; gap: 8px; font: .78rem var(--f-mono); color: var(--ink-2); white-space: nowrap; }
@@ -307,6 +315,12 @@ html { scroll-behavior: smooth; }
         <div><span class="lbl">Autoria</span>Isadora Beckmann · Future Tech Leaders Brasil, Space Tech Bootcamp 2026</div>
         <div><span class="lbl">Recorte</span>Bacia do Taquari-Antas até Encantado (19.193 km²) · 2018 a 2026 · horizontes de 6 a 12 h</div>
         <div><span class="lbl">Fontes</span>ANA (telemetria), NASA GPM IMERG, HydroBASINS, Open-Meteo (GFS/ECMWF), SGB/SACE</div>
+      </div>
+      <div class="repo-links">
+        <span class="lbl">Código e dados</span>
+        <a href="https://github.com/isabeckmann/ftl-capstone" target="_blank" rel="noopener">GitHub ↗</a>
+        <a href="https://doi.org/10.5281/zenodo.24446019" target="_blank" rel="noopener">código no Zenodo ↗</a>
+        <a href="https://doi.org/10.5281/zenodo.24446327" target="_blank" rel="noopener">dados no Zenodo ↗</a>
       </div>
     </div>
   </header>
@@ -435,6 +449,12 @@ html { scroll-behavior: smooth; }
 
   <footer id="fontes">
     <div class="inner">
+      <span class="eyebrow">Código e dados abertos</span>
+      <div class="links">
+        <div><b>Repositório</b><a href="https://github.com/isabeckmann/ftl-capstone" target="_blank" rel="noopener">github.com/isabeckmann/ftl-capstone</a></div>
+        <div><b>Código arquivado (v1.0.0)</b><a href="https://doi.org/10.5281/zenodo.24446019" target="_blank" rel="noopener">doi:10.5281/zenodo.24446019</a></div>
+        <div><b>Dados, previsões e modelo (CC BY 4.0)</b><a href="https://doi.org/10.5281/zenodo.24446327" target="_blank" rel="noopener">doi:10.5281/zenodo.24446327</a></div>
+      </div>
       <span class="eyebrow">Notas e fontes</span>
       <span id="foot-cenario"></span>
       <span>Fontes: ANA (HidroWebService, telemetria), NASA GPM IMERG Early V07 (meia-horária; usada pelo modelo e na seção Agora) e IMERG Final V07 (diária; mapa), pluviômetros telemétricos da ANA/SGB/Defesa Civil RS e previsão de chuva GFS (NOAA) e ECMWF IFS via Open-Meteo (seção Agora), HydroBASINS v1c (Lehner &amp; Grill, 2013), cotas de referência do SGB/SACE.</span>

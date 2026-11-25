@@ -11,27 +11,33 @@ body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
+/* Identidade "Hidrologia e Território": jornalismo de dados / publicação científica.
+   Faixas de largura total (areia, pedra, azul-petróleo), grid editorial com filetes, sem cards com sombra.
+   Os gráficos (D3) leem as cores destas variáveis via getComputedStyle — mudar aqui muda os gráficos. */
 :root {
   color-scheme: light;
-  --paper: #F5F2EB;
-  --stone: #EAE5DC;
-  --surface: #F5F2EB;
-  --ink: #1C1E21;
-  --ink-2: #4A4E54;
-  --ink-3: #6B675F;
-  --rule: #D5CFC4;
+  /* papel e tinta */
+  --paper: #F5F2EB;          /* areia: fundo principal */
+  --stone: #EAE5DC;          /* pedra: faixas alternadas */
+  --surface: #F5F2EB;        /* fundo das figuras (anel em volta das marcas) */
+  --ink: #1C1E21;            /* carvão: texto e série observada */
+  --ink-2: #4A4E54;          /* texto secundário */
+  --ink-3: #6B675F;          /* metadados, eixos */
+  --rule: #D5CFC4;           /* filetes de 1px */
   --rule-soft: #E2DDD3;
-  --agua: #184E68;
+  /* hidrologia e território */
+  --agua: #184E68;           /* azul-petróleo: dados hidrológicos, faixas escuras */
   --agua-soft: rgba(24, 78, 104, .08);
-  --terra: #C25934;
+  --terra: #C25934;          /* terracota: enchente, alerta, cotas de referência */
   --terra-soft: rgba(194, 89, 52, .08);
-  --ocre: #D48C2A;
-  --ocre-ink: #94600F;
-  --verde: #2D5A43;
-  --silt: #D48C2A;
+  --ocre: #D48C2A;           /* ocre: previsão, comparativos, seleção */
+  --ocre-ink: #94600F;       /* ocre escurecido para texto sobre a areia */
+  --verde: #2D5A43;          /* mata ciliar: resultado, ganho, sistema em operação */
+  /* papéis usados pelos gráficos */
+  --silt: #D48C2A;           /* previsão / seleção */
   --silt-ink: #94600F;
   --silt-soft: rgba(212, 140, 42, .13);
-  --warn: #C25934;
+  --warn: #C25934;           /* cotas de referência, avisos */
   --warn-soft: rgba(194, 89, 52, .08);
   --band-train: rgba(74, 78, 84, .06);
   --band-val: rgba(74, 78, 84, .12);
@@ -41,9 +47,11 @@ body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
   --m-ridge: #D48C2A;
   --m-hgb: #C25934;
   --m-mlp: #2D5A43;
-  --m-gru: #4A87A8;
+  --m-gru: #4A87A8;           /* azul-petróleo claro: distingue a GRU da série observada (carvão) e da MLP (verde) */
+  /* rampa sequencial de chuva: azul-petróleo, claro -> escuro */
   --seq-0: #DCE5E6; --seq-1: #B5CAD0; --seq-2: #89A9B6; --seq-3: #5C889C;
   --seq-4: #356883; --seq-5: #184E68; --seq-6: #0D3347;
+  /* tipografia */
   --f-display: "Newsreader", "Source Serif 4", Georgia, serif;
   --f-body: "IBM Plex Sans", "Plus Jakarta Sans", system-ui, sans-serif;
   --f-mono: "IBM Plex Mono", "JetBrains Mono", ui-monospace, Menlo, monospace;
@@ -59,12 +67,15 @@ body {
 }
 a { color: var(--agua); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, var(--agua) 45%, transparent); transition: color .15s, text-decoration-color .15s; }
 a:hover { color: var(--terra); text-decoration-color: var(--terra); }
+
+/* ---------- estrutura: faixas de largura total + coluna central */
 .wrap { display: flex; flex-direction: column; }
 .band { padding-inline: var(--gutter); padding-block: 56px 64px; border-top: 1px solid var(--rule); }
 .band.paper { background: var(--paper); }
 .band.stone { background: var(--stone); }
 .band.agua { background: var(--agua); color: var(--paper); border-top: 0; }
 .inner { max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+
 h1, h2, h3 { font-family: var(--f-display); font-weight: 600; margin: 0; text-wrap: balance; letter-spacing: -.005em; color: var(--ink); }
 h1 { font-size: clamp(2.6rem, 7vw, 4.6rem); line-height: 1; font-weight: 700; letter-spacing: -.02em; color: var(--agua); }
 h2 { font-size: clamp(1.7rem, 3.4vw, 2.3rem); line-height: 1.12; }
@@ -73,6 +84,8 @@ p { margin: 0; max-width: var(--measure); }
 .eyebrow { font-family: var(--f-mono); font-size: .72rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
 .muted { color: var(--ink-2); }
 .num { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+
+/* ---------- cabeçalho editorial */
 header.top { padding-inline: var(--gutter); padding-block: 40px 36px; background: var(--paper); }
 header.top .inner { gap: 0; }
 .kicker { font: 500 .78rem var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--terra); margin-bottom: 18px; display: flex; gap: 10px; align-items: center; }
@@ -81,6 +94,11 @@ header.top .lede { font-family: var(--f-display); font-size: clamp(1.2rem, 2.2vw
 .meta { margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--rule); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px 32px; }
 .meta div { display: flex; flex-direction: column; gap: 2px; font-size: .9rem; color: var(--ink-2); line-height: 1.45; }
 .meta dt, .meta .lbl { font: 500 .68rem var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.repo-links { margin-top: 16px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 22px; font: .8rem var(--f-mono); color: var(--ink-3); }
+.repo-links .lbl { font-size: .68rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; }
+.repo-links a { white-space: nowrap; }
+
+/* faixa azul-petróleo com os números do estudo */
 .facts-band .inner { gap: 18px; }
 .facts-band .eyebrow { color: color-mix(in srgb, var(--paper) 70%, transparent); }
 .facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; }
@@ -88,6 +106,8 @@ header.top .lede { font-family: var(--f-display); font-size: clamp(1.2rem, 2.2vw
 .fact:first-child { border-left: 3px solid var(--ocre); }
 .fact b { font: 500 clamp(2.6rem, 6vw, 4rem) var(--f-mono); line-height: 1; letter-spacing: -.03em; font-variant-numeric: tabular-nums; color: var(--paper); }
 .fact span { font: .8rem var(--f-mono); color: color-mix(in srgb, var(--paper) 78%, transparent); line-height: 1.4; }
+
+/* ---------- cabeçalho de seção */
 section.block { display: block; }
 .block-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 14px 32px; padding-bottom: 18px; border-bottom: 1px solid var(--ink); }
 .block-head > div:first-child { display: flex; flex-direction: column; gap: 10px; }
@@ -96,8 +116,12 @@ section.block { display: block; }
 .sec-num::before { content: ""; width: 22px; height: 2px; background: currentColor; }
 .sec-num.verde { color: var(--verde); }
 .sec-num.agua { color: var(--agua); }
+
+/* "painel" agora é uma área de figura: sem caixa, sem sombra — só um filete em cima */
 .panel { background: var(--surface); border: 0; border-top: 1px solid var(--rule); border-radius: 0; }
 .band.paper .panel { background: transparent; }
+
+/* ---------- controles */
 .controls { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; }
 .ctl { display: flex; align-items: center; gap: 10px; }
 .ctl > label, .ctl > .lbl { font: 500 .7rem var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
@@ -115,6 +139,8 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 .chip[aria-pressed="false"] .sw { background: var(--rule); }
 .toggle { display: inline-flex; align-items: center; gap: 8px; font-size: .92rem; color: var(--ink-2); cursor: pointer; }
 .toggle input { accent-color: var(--agua); width: 16px; height: 16px; }
+
+/* ---------- mapa */
 .map-grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 0 40px; }
 .map-box { padding: 16px 0 0; display: flex; flex-direction: column; gap: 12px; }
 #mapa { width: 100%; display: block; }
@@ -134,6 +160,8 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 .rain-sum { padding: 18px 16px 6px 19px; display: flex; flex-direction: column; gap: 6px; border-left: 3px solid var(--agua); margin-top: 18px; }
 .rain-sum b { font: 500 2.3rem var(--f-mono); letter-spacing: -.03em; line-height: 1; color: var(--agua); font-variant-numeric: tabular-nums; }
 .note { font-size: .84rem; color: var(--ink-3); }
+
+/* ---------- evento */
 .ev-grid { display: grid; grid-template-columns: minmax(0, 1fr) 200px; gap: 0 32px; }
 .ev-main { padding: 16px 0 6px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .ev-side { padding: 16px 0 6px 20px; display: flex; flex-direction: column; gap: 8px; border-left: 1px solid var(--rule); border-top: 1px solid var(--rule); }
@@ -159,6 +187,8 @@ tbody tr { transition: background .15s; }
 tbody tr:hover { background: var(--agua-soft); }
 td.pos { color: var(--terra); font-weight: 500; }
 td.dim { color: var(--ink-3); }
+
+/* ---------- métricas e série longa */
 .two { display: grid; grid-template-columns: 1fr 1fr; gap: 0 40px; }
 .small-box { padding: 16px 0 6px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .small-box h3 { padding-bottom: 4px; }
@@ -166,18 +196,29 @@ td.dim { color: var(--ink-3); }
 .legend span { display: inline-flex; align-items: center; gap: 7px; }
 .legend i { width: 16px; height: 3px; background: var(--c); display: inline-block; }
 .legend i.box { height: 11px; width: 16px; border: 1px solid var(--rule); }
+
+/* ---------- tooltip */
 #tip { position: fixed; pointer-events: none; z-index: 20; background: var(--paper); color: var(--ink); border: 1px solid var(--ink); border-radius: 0; box-shadow: 3px 3px 0 rgba(28, 30, 33, .08); padding: 8px 11px; font-size: .84rem; line-height: 1.45; min-width: 160px; }
 #tip .t { font: 500 .72rem var(--f-mono); color: var(--ink-3); margin-bottom: 5px; padding-bottom: 4px; border-bottom: 1px solid var(--rule); }
 #tip .r { display: flex; justify-content: space-between; gap: 14px; align-items: center; }
 #tip .r span:first-child { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-2); }
 #tip .r i { width: 10px; height: 3px; background: var(--c); display: inline-block; }
 #tip .r b { font-family: var(--f-mono); font-weight: 500; font-variant-numeric: tabular-nums; }
+
+/* ---------- rodapé (faixa escura) */
 footer { padding-inline: var(--gutter); padding-block: 40px 56px; background: var(--agua); color: color-mix(in srgb, var(--paper) 82%, transparent); font-size: .86rem; line-height: 1.6; }
 footer .inner { gap: 10px; }
 footer .eyebrow { color: var(--ocre); }
 footer span { max-width: 90ch; }
 footer a { color: var(--paper); text-decoration-color: color-mix(in srgb, var(--paper) 50%, transparent); }
 footer a:hover { color: var(--ocre); text-decoration-color: var(--ocre); }
+footer .links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 32px; margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid color-mix(in srgb, var(--paper) 22%, transparent); }
+footer .links div { display: flex; flex-direction: column; gap: 2px; }
+footer .links b { font: 500 .68rem var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: color-mix(in srgb, var(--paper) 65%, transparent); }
+footer .links a { font-family: var(--f-mono); font-size: .84rem; overflow-wrap: anywhere; }
+@media (max-width: 900px) { footer .links { grid-template-columns: 1fr; } }
+
+/* ---------- agora (ao vivo) */
 .live-status { display: inline-flex; align-items: center; gap: 8px; font: .78rem var(--f-mono); color: var(--ink-2); white-space: nowrap; }
 .live-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--ink-3); flex: none; }
 .live-dot.on { background: var(--verde); box-shadow: 0 0 0 3px rgba(45, 90, 67, .18); }
@@ -211,6 +252,8 @@ footer a:hover { color: var(--ocre); text-decoration-color: var(--ocre); }
 .live-off { padding: 20px 0; color: var(--ink-2); font-size: .98rem; }
 #now-up { padding-top: 4px; }
 .now-sub .panel .eyebrow { padding: 12px 0 0 !important; }
+
+/* ---------- barra de navegação fixa */
 .site-nav { position: sticky; top: 0; z-index: 15; background: color-mix(in srgb, var(--paper) 94%, transparent); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border-bottom: 1px solid var(--rule); padding-inline: var(--gutter); }
 .site-nav .bar { max-width: 1240px; margin: 0 auto; display: flex; align-items: center; gap: 12px 28px; min-height: 52px; }
 .site-nav .brand { font: 700 1.1rem var(--f-display); color: var(--agua); text-decoration: none; white-space: nowrap; letter-spacing: -.01em; display: inline-flex; align-items: center; gap: 10px; }
@@ -274,13 +317,19 @@ html { scroll-behavior: smooth; }
   </nav>
   <header class="top" id="topo">
     <div class="inner">
-      <div class="kicker">Rio Taquari · RS · estudo de caso</div>
+      <div class="kicker">Rio Taquari · RS</div>
       <h1>Cheias do Taquari</h1>
       <p class="lede" id="lede">Previsão da cota em Muçum e Encantado, avaliada nas cheias de 2023 e 2024.</p>
       <div class="meta">
         <div><span class="lbl">Autoria</span>Isadora Beckmann · Future Tech Leaders Brasil, Space Tech Bootcamp 2026</div>
         <div><span class="lbl">Recorte</span>Bacia do Taquari-Antas até Encantado (19.193 km²) · 2018 a 2026 · horizontes de 6 a 12 h</div>
         <div><span class="lbl">Fontes</span>ANA (telemetria), NASA GPM IMERG, HydroBASINS, Open-Meteo (GFS/ECMWF), SGB/SACE</div>
+      </div>
+      <div class="repo-links">
+        <span class="lbl">Código e dados</span>
+        <a href="https://github.com/isabeckmann/ftl-capstone" target="_blank" rel="noopener">GitHub ↗</a>
+        <a href="https://doi.org/10.5281/zenodo.24446019" target="_blank" rel="noopener">código no Zenodo ↗</a>
+        <a href="https://doi.org/10.5281/zenodo.24446327" target="_blank" rel="noopener">dados no Zenodo ↗</a>
       </div>
     </div>
   </header>
@@ -409,6 +458,12 @@ html { scroll-behavior: smooth; }
 
   <footer id="fontes">
     <div class="inner">
+      <span class="eyebrow">Código e dados abertos</span>
+      <div class="links">
+        <div><b>Repositório</b><a href="https://github.com/isabeckmann/ftl-capstone" target="_blank" rel="noopener">github.com/isabeckmann/ftl-capstone</a></div>
+        <div><b>Código arquivado</b><a href="https://doi.org/10.5281/zenodo.24446019" target="_blank" rel="noopener">doi:10.5281/zenodo.24446019</a></div>
+        <div><b>Dados, previsões e modelo (CC BY 4.0)</b><a href="https://doi.org/10.5281/zenodo.24446327" target="_blank" rel="noopener">doi:10.5281/zenodo.24446327</a></div>
+      </div>
       <span class="eyebrow">Notas e fontes</span>
       <span id="foot-cenario"></span>
       <span>Fontes: ANA (HidroWebService, telemetria), NASA GPM IMERG Early V07 (meia-horária; usada pelo modelo e na seção Agora) e IMERG Final V07 (diária; mapa), pluviômetros telemétricos da ANA/SGB/Defesa Civil RS e previsão de chuva GFS (NOAA) e ECMWF IFS via Open-Meteo (seção Agora), HydroBASINS v1c (Lehner &amp; Grill, 2013), cotas de referência do SGB/SACE.</span>
@@ -466,6 +521,7 @@ function seg(id, items, key, onchange) {
   });
 }
 
+/* ---------------------------------------------------------------- cabeçalho */
 function renderFacts() {
   const t = D.teste.filter(r => r.modelo !== "persistencia");
   const best = h => d3.max(t.filter(r => r.horizonte_h === h), r => r.skill_vs_persist);
@@ -480,6 +536,7 @@ function renderFacts() {
     `Cenário: ${D.cenario === "com_imerg" ? "com chuva IMERG" : "sem IMERG"}; entradas e variação prevista limitadas à faixa do treino ± ${Math.round(100 * D.margem)}% da amplitude.`;
 }
 
+/* ---------------------------------------------------------------- mapa */
 const K = Math.cos(29.2 * Math.PI / 180);
 const tx = c => typeof c[0] === "number" ? [c[0] * K, c[1]] : c.map(tx);
 const BACIAS = D.bacias.features.map(f => ({ ...f, geometry: { ...f.geometry, coordinates: tx(f.geometry.coordinates) } }))
@@ -574,6 +631,7 @@ function renderRainSum() {
      <span class="note">Média nas ${ins.length} células da bacia de Encantado. Fora dela, na mesma caixa: ${n0(meanOut)} ${L.unidade}.</span>`;
 }
 
+/* ---------------------------------------------------------------- evento */
 function eventData() {
   const E = D.eventos[`${S.est}|${S.ev}`], H = E.horizontes[S.h];
   const t0 = utc(E.inicio), T = d3.range(E.n).map(i => new Date(+t0 + i * 36e5));
@@ -725,6 +783,7 @@ function renderChips() {
   });
 }
 
+/* ---------------------------------------------------------------- skill */
 function renderSkill() {
   const host = document.getElementById("skill"); host.innerHTML = "";
   const mods = MODELOS.filter(m => m !== "persistencia");
@@ -759,6 +818,7 @@ function renderSkill() {
   });
 }
 
+/* ---------------------------------------------------------------- série longa */
 function renderLong() {
   const host = document.getElementById("long"); host.innerHTML = "";
   const L = D.serie_longa, d0 = utcD(L.inicio);
@@ -797,8 +857,9 @@ function renderLong() {
   });
 }
 
+/* ---------------------------------------------------------------- agora (ao vivo) */
 let LIVE = null, LIVE_ERR = null;
-const nowLocal = () => new Date(Date.now() + (D.ao_vivo?.utc_offset_h ?? -3) * 36e5);
+const nowLocal = () => new Date(Date.now() + (D.ao_vivo?.utc_offset_h ?? -3) * 36e5);   // relógio local no mesmo "UTC falso" das séries
 const REF_NOMES = [["atencao", "atenção"], ["alerta", "alerta"], ["inundacao", "inundação"]];
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
@@ -815,12 +876,15 @@ async function loadLive() {
   LIVE = null; renderAgora(); irParaAncora();
 }
 
+/* A seção "Agora" muda de altura quando os dados ao vivo chegam; um link direto (#cheias etc.) precisa ser refeito uma vez. */
 let ancoraFeita = false;
 function irParaAncora() {
   if (ancoraFeita) return;
   ancoraFeita = true;
   const el = location.hash && document.querySelector(location.hash);
   if (!el) return;
+  // fontes e gráficos ainda mudam a altura da página por um instante: reposiciona algumas vezes,
+  // e para assim que a pessoa rolar por conta própria
   let mexeu = false;
   const parar = () => { mexeu = true; };
   ["wheel", "touchstart", "keydown", "mousedown"].forEach(t => addEventListener(t, parar, { once: true, passive: true }));
@@ -1034,6 +1098,7 @@ seg("seg-ev", EVENTOS.map(e => [e, e]), "ev", renderEvento);
 seg("seg-h", D.horizontes.map(h => [String(h), `${h} h`]), "h", renderEvento);
 const lv = document.getElementById("livre"); lv.checked = S.livre; lv.onchange = () => { S.livre = lv.checked; persist(); renderEvento(); };
 renderAll();
+/* ---------------------------------------------------------------- navegação: seção atual e progresso de leitura */
 (function () {
   const links = [...document.querySelectorAll(".site-nav ol a")];
   const alvos = links.map(a => document.querySelector(a.getAttribute("href"))).filter(Boolean);
@@ -1041,7 +1106,7 @@ renderAll();
   let raf = 0;
   function atualiza() {
     raf = 0;
-    const lim = 90; 
+    const lim = 90;                                  // altura da barra + folga
     let atual = null;
     alvos.forEach(el => { if (el.getBoundingClientRect().top <= lim) atual = el; });
     if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) atual = alvos.at(-1);
