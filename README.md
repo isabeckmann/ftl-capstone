@@ -126,6 +126,7 @@ GitHub Actions (de hora em hora)
 ```
 
 - **Modelo operacional** (`src/operacional.py`): o gradient boosting com IMERG Early, treinado com todo o histórico (até jun/2026). Antes de salvar, uma checagem treina até jun/2025 e testa depois disso. O skill ficou em 0,89, 0,83 e 0,67 em Muçum e em 0,90, 0,86 e 0,72 em Encantado (6, 8 e 12 h).
+- **Conferência:** o `previsoes.csv` guarda cada previsão e, quando a hora prevista passa, a cota medida pela ANA (coluna `cota_obs`). O `agora.json` leva o erro, o RMSE e o skill contra a persistência por horizonte, e o painel mostra o previsto × observado dos últimos 7 dias.
 - **Avisos:**
   - quando uma estação usada pelo modelo fica 6 h sem leituras;
   - quando os dados passam de 3 h sem atualização;

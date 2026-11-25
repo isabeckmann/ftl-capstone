@@ -219,17 +219,73 @@ def montar_json(panel, chuva_utc, prev, ultimas, modelo, avisos, prevista=None, 
                        "latencia_imerg_h": modelo["latencia_imerg_h"]}}
 
 
-def gravar_historico(path, prev, gerado_em):
+COLS_HIST = ["t_ref", "estacao", "h", "t_alvo", "cota_t", "cota_prev", "gerado_em", "cota_obs"]
+DIAS_VERIFICACAO = 7
+
+
+def gravar_historico(path, prev, gerado_em, panel=None, ultimas=None) -> pd.DataFrame:
+    """Acrescenta as previsões desta rodada ao CSV e preenche cota_obs das previsões cujo horário-alvo já passou.
+
+    cota_obs é a média horária da cota em t_alvo, a mesma definição de cota_t e do alvo do treino. Só entram horas
+    completas (como em _hora_ref) e o valor, uma vez gravado, não muda: o CSV guarda a conferência para sempre, mesmo
+    depois que a hora sai da janela de 7 dias que a API da ANA devolve.
+    """
     rows = [{"t_ref": _iso(p["t_ref"]), "estacao": code, "h": q["h"], "t_alvo": _iso(q["t"]),
              "cota_t": round(p["cota_t"], 1), "cota_prev": round(q["cota"], 1), "gerado_em": gerado_em}
             for code, p in prev.items() if "previsoes" in p for q in p["previsoes"]]
-    if not rows:
-        return
-    new = pd.DataFrame(rows)
     path = Path(path)
+    df = pd.DataFrame(rows, columns=COLS_HIST[:-1])
     if path.exists():
-        new = pd.concat([pd.read_csv(path, dtype={"estacao": str}), new])
-    new.drop_duplicates(["t_ref", "estacao", "h"], keep="first").sort_values(["t_ref", "estacao", "h"]).to_csv(path, index=False)
+        df = pd.concat([pd.read_csv(path, dtype={"estacao": str}), df])
+    if df.empty:
+        return df
+    df = df.drop_duplicates(["t_ref", "estacao", "h"], keep="first").sort_values(["t_ref", "estacao", "h"])
+    df = df.reindex(columns=COLS_HIST).reset_index(drop=True)
+    if panel is not None:
+        t_alvo = pd.to_datetime(df["t_alvo"])
+        for code in df["estacao"].unique():
+            col = f"cota_{code}"
+            if col not in panel:
+                continue
+            s = panel[col].dropna()
+            ult = (ultimas or {}).get(code)
+            if ult is not None:
+                s = s[s.index + pd.Timedelta(hours=1) <= ult + pd.Timedelta(minutes=15)]
+            sel = (df["estacao"] == code) & df["cota_obs"].isna()
+            df.loc[sel, "cota_obs"] = t_alvo[sel].map(s).round(1)
+    df.to_csv(path, index=False)
+    return df
+
+
+def verificacao(hist: pd.DataFrame | None, panel: pd.DataFrame, dias: int = DIAS_VERIFICACAO) -> dict | None:
+    """Previsões ao vivo já conferidas: métricas por estação e horizonte (todo o histórico) e pares dos últimos dias."""
+    if hist is None or hist.empty or "cota_obs" not in hist:
+        return None
+    v = hist.dropna(subset=["cota_obs", "cota_prev", "cota_t"]).copy()
+    if v.empty:
+        return None
+    v["t_alvo"] = pd.to_datetime(v["t_alvo"])
+    fim = panel.index.max()
+    idx = pd.date_range(fim - pd.Timedelta(hours=24 * dias - 1), fim, freq="h")
+    est = {}
+    for code, g in v.groupby("estacao"):
+        col = f"cota_{code}"
+        metricas, pares = [], []
+        for h, gh in g.groupby("h"):
+            e, ep = gh["cota_prev"] - gh["cota_obs"], gh["cota_t"] - gh["cota_obs"]
+            mse, msep = float((e ** 2).mean()), float((ep ** 2).mean())
+            metricas.append({"h": int(h), "n": int(len(gh)), "mae": round(float(e.abs().mean()), 1),
+                             "vies": round(float(e.mean()), 1), "rmse": round(mse ** .5, 1),
+                             "rmse_persist": round(msep ** .5, 1),
+                             "skill": round(1 - mse / msep, 2) if msep > 0 else None})
+            r = gh[gh["t_alvo"] >= idx[0]]
+            pares.append({"h": int(h),
+                          "i": [int((t - idx[0]) / pd.Timedelta(hours=1)) for t in r["t_alvo"]],
+                          "prev": _r(r["cota_prev"]), "obs": _r(r["cota_obs"]), "base": _r(r["cota_t"])})
+        est[code] = {"metricas": metricas, "pares": pares,
+                     "obs": _r(panel[col].reindex(idx)) if col in panel else None}
+    return {"inicio": _iso(idx[0]), "n": len(idx), "dias": dias,
+            "desde": _iso(pd.to_datetime(v["t_ref"]).min()), "estacoes": est}
 
 
 def rodar(saida, historico=None):
@@ -274,10 +330,14 @@ def rodar(saida, historico=None):
         avisos.append(f"Pluviômetros da bacia indisponíveis ({type(exc).__name__}).")
     prev = prever(panel, modelo, ultimas)
     js = montar_json(panel, chuva, prev, ultimas, modelo, avisos, prevista, pluvio)
+    if historico:
+        hist = gravar_historico(historico, prev, js["gerado_em"], panel, ultimas)
+        try:
+            js["verificacao"] = verificacao(hist, panel)
+        except Exception as exc:  # noqa: BLE001  (a conferência nunca deve derrubar a previsão)
+            print(f"[ao_vivo] verificação falhou: {exc!r}")
     Path(saida).parent.mkdir(parents=True, exist_ok=True)
     Path(saida).write_text(json.dumps(js, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-    if historico:
-        gravar_historico(historico, prev, js["gerado_em"])
     return js
 
 
@@ -294,6 +354,11 @@ if __name__ == "__main__":
         elif e.get("erro"):
             print(f"{e['nome']}: {e['erro']}")
     print("chuva IMERG até:", js["chuva"] and js["chuva"]["ultima_hora"], "| avisos:", js["avisos"])
+    vf = js.get("verificacao")
+    if vf:
+        for code, e in vf["estacoes"].items():
+            print(f"conferência {code} desde {vf['desde']}: " + ", ".join(
+                f"+{m['h']}h n={m['n']} RMSE {m['rmse']} cm (persist. {m['rmse_persist']})" for m in e["metricas"]))
     pl = js.get("pluviometros")
     if pl:
         print(f"pluviômetros ({pl['n_estacoes']}/{pl['n_rede']} estações, até {pl['ultima_hora']}): bacia 6 h "

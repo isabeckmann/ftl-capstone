@@ -253,6 +253,15 @@ footer .links a { font-family: var(--f-mono); font-size: .84rem; overflow-wrap: 
 #now-up { padding-top: 4px; }
 .now-sub .panel .eyebrow { padding: 12px 0 0 !important; }
 
+/* ---------- conferência (previsto × observado ao vivo) */
+.legend i.dot { width: 8px; height: 8px; border-radius: 50%; }
+.conf-card { padding: 16px 0 6px; display: flex; flex-direction: column; gap: 10px; min-width: 0; border-top: 3px solid var(--agua); }
+.conf-tbl { font: .8rem var(--f-mono); font-variant-numeric: tabular-nums; }
+.conf-tbl th, .conf-tbl td { padding: 5px 8px; text-align: right; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+.conf-tbl th { font-weight: 500; color: var(--ink-3); font-size: .7rem; letter-spacing: .06em; text-transform: uppercase; }
+.conf-tbl th:first-child, .conf-tbl td:first-child { text-align: left; }
+.conf-tbl tr.sel td { background: var(--silt-soft); font-weight: 500; }
+
 /* ---------- barra de navegação fixa */
 .site-nav { position: sticky; top: 0; z-index: 15; background: color-mix(in srgb, var(--paper) 94%, transparent); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border-bottom: 1px solid var(--rule); padding-inline: var(--gutter); }
 .site-nav .bar { max-width: 1240px; margin: 0 auto; display: flex; align-items: center; gap: 12px 28px; min-height: 52px; }
@@ -305,10 +314,11 @@ html { scroll-behavior: smooth; }
       <a class="brand" href="#topo">Cheias do Taquari</a>
       <ol>
         <li><a href="#agora"><span>01</span>Agora</a></li>
-        <li><a href="#territorio"><span>02</span>Território</a></li>
-        <li><a href="#cheias"><span>03</span>Cheias</a></li>
-        <li><a href="#resultado"><span>04</span>Resultado</a></li>
-        <li><a href="#historico"><span>05</span>Histórico</a></li>
+        <li><a href="#conferencia"><span>02</span>Conferência</a></li>
+        <li><a href="#territorio"><span>03</span>Território</a></li>
+        <li><a href="#cheias"><span>04</span>Cheias</a></li>
+        <li><a href="#resultado"><span>05</span>Resultado</a></li>
+        <li><a href="#historico"><span>06</span>Histórico</a></li>
         <li><a href="#fontes"><span>·</span>Fontes</a></li>
       </ol>
       <a class="nav-live" href="#agora" id="nav-live"><span class="live-dot"></span><span class="txt">ao vivo</span></a>
@@ -317,7 +327,7 @@ html { scroll-behavior: smooth; }
   </nav>
   <header class="top" id="topo">
     <div class="inner">
-      <div class="kicker">Rio Taquari · RS</div>
+      <div class="kicker">Rio Taquari · RS · estudo de caso</div>
       <h1>Cheias do Taquari</h1>
       <p class="lede" id="lede">Previsão da cota em Muçum e Encantado, avaliada nas cheias de 2023 e 2024.</p>
       <div class="meta">
@@ -363,11 +373,28 @@ html { scroll-behavior: smooth; }
     </div>
   </section>
 
-  <section class="band stone block" aria-labelledby="h-mapa" id="territorio">
+  <section class="band stone block" aria-labelledby="h-conf" id="conferencia">
     <div class="inner">
       <div class="block-head">
         <div>
-          <span class="sec-num agua">02 · Território</span>
+          <span class="sec-num">02 · Conferência</span>
+          <h2 id="h-conf">Previsto × observado, ao vivo</h2>
+          <p>Cada previsão feita pela rotina horária é guardada e, quando a hora prevista chega, comparada com a cota que a ANA mediu. É a avaliação fora da amostra, em tempo real, das mesmas previsões mostradas acima.</p>
+        </div>
+      </div>
+      <div class="controls">
+        <div class="ctl"><span class="lbl">Horizonte</span><div class="seg" id="seg-vh" role="group" aria-label="Horizonte da conferência"></div></div>
+        <div class="legend"><span><i style="--c:var(--ink)"></i>observado</span><span><i class="dot" style="--c:var(--silt)"></i>previsto para aquela hora</span></div>
+      </div>
+      <div id="conf-body"><div class="panel live-off">Carregando os dados ao vivo…</div></div>
+    </div>
+  </section>
+
+  <section class="band paper block" aria-labelledby="h-mapa" id="territorio">
+    <div class="inner">
+      <div class="block-head">
+        <div>
+          <span class="sec-num agua">03 · Território</span>
           <h2 id="h-mapa">Áreas de drenagem e chuva</h2>
           <p>Áreas a montante de cada estação (HydroBASINS nível 12) sobre a grade do IMERG (0,1°). As células fora da bacia de Encantado aparecem esmaecidas.</p>
         </div>
@@ -386,11 +413,11 @@ html { scroll-behavior: smooth; }
     </div>
   </section>
 
-  <section class="band paper block" aria-labelledby="h-ev" id="cheias">
+  <section class="band stone block" aria-labelledby="h-ev" id="cheias">
     <div class="inner">
       <div class="block-head">
         <div>
-          <span class="sec-num">03 · Cheias</span>
+          <span class="sec-num">04 · Cheias</span>
           <h2 id="h-ev">Evento: observado × previsto</h2>
           <p>Cada curva prevista está posicionada no instante previsto (t + h). A régua ao lado compara os picos.</p>
         </div>
@@ -423,11 +450,11 @@ html { scroll-behavior: smooth; }
     </div>
   </section>
 
-  <section class="band stone block" aria-labelledby="h-skill" id="resultado">
+  <section class="band paper block" aria-labelledby="h-skill" id="resultado">
     <div class="inner">
       <div class="block-head">
         <div>
-          <span class="sec-num verde">04 · Resultado</span>
+          <span class="sec-num verde">05 · Resultado</span>
           <h2 id="h-skill">Ganho sobre a persistência</h2>
           <p>Skill = 1 − MSE(modelo) / MSE(persistência), no período de teste inteiro (2023 em diante). Acima de zero, o modelo é melhor que repetir a cota atual.</p>
         </div>
@@ -437,11 +464,11 @@ html { scroll-behavior: smooth; }
     </div>
   </section>
 
-  <section class="band paper block" aria-labelledby="h-long" id="historico">
+  <section class="band stone block" aria-labelledby="h-long" id="historico">
     <div class="inner">
       <div class="block-head">
         <div>
-          <span class="sec-num agua">05 · Histórico</span>
+          <span class="sec-num agua">06 · Histórico</span>
           <h2 id="h-long">Série completa</h2>
           <p>Cota máxima diária (dias com ao menos 25% das horas medidas). Os períodos de treino, validação e teste estão sombreados, e os eventos, marcados.</p>
         </div>
@@ -461,7 +488,7 @@ html { scroll-behavior: smooth; }
       <span class="eyebrow">Código e dados abertos</span>
       <div class="links">
         <div><b>Repositório</b><a href="https://github.com/isabeckmann/ftl-capstone" target="_blank" rel="noopener">github.com/isabeckmann/ftl-capstone</a></div>
-        <div><b>Código arquivado</b><a href="https://doi.org/10.5281/zenodo.24446019" target="_blank" rel="noopener">doi:10.5281/zenodo.24446019</a></div>
+        <div><b>Código arquivado (v1.0.0)</b><a href="https://doi.org/10.5281/zenodo.24446019" target="_blank" rel="noopener">doi:10.5281/zenodo.24446019</a></div>
         <div><b>Dados, previsões e modelo (CC BY 4.0)</b><a href="https://doi.org/10.5281/zenodo.24446327" target="_blank" rel="noopener">doi:10.5281/zenodo.24446327</a></div>
       </div>
       <span class="eyebrow">Notas e fontes</span>
@@ -492,9 +519,10 @@ const fDia = ptTime.utcFormat("%d/%m"), fHora = ptTime.utcFormat("%d/%m %Hh"), f
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const cor = m => css(`--m-${m}`);
 
-const S = { est: "86510000", ev: "mai/2024", h: String(D.horizontes.at(-1)), modelos: new Set(MODELOS), livre: false, mapa: "mai/2024", bacia: "86720000" };
+const S = { est: "86510000", ev: "mai/2024", h: String(D.horizontes.at(-1)), modelos: new Set(MODELOS), livre: false, mapa: "mai/2024", bacia: "86720000", vh: String(D.horizontes[0]) };
 try { const saved = JSON.parse(localStorage.getItem("taquari-painel") || "null"); if (saved) Object.assign(S, saved, { modelos: new Set(saved.modelos || MODELOS) }); } catch (e) {}
 if (!D.horizontes.map(String).includes(S.h)) S.h = String(D.horizontes.at(-1));
+if (!D.horizontes.map(String).includes(S.vh)) S.vh = String(D.horizontes[0]);
 function persist() { try { localStorage.setItem("taquari-painel", JSON.stringify({ ...S, modelos: [...S.modelos] })); } catch (e) {} }
 
 /* ---------------------------------------------------------------- tooltip */
@@ -919,6 +947,7 @@ function nivelRef(v, ref) {
 
 function renderAgora() {
   liveStatus();
+  renderConferencia();
   const body = document.getElementById("live-body"), av = document.getElementById("live-avisos");
   if (!LIVE) {
     av.hidden = true;
@@ -1090,12 +1119,73 @@ function renderNowRain(T) {
   acc.innerHTML = html;
 }
 
+/* ---------------------------------------------------------------- conferência ao vivo */
+function renderConferencia() {
+  const body = document.getElementById("conf-body");
+  const V = LIVE && LIVE.verificacao;
+  if (!V || !Object.keys(V.estacoes || {}).length) {
+    body.innerHTML = `<div class="panel live-off">${LIVE ? "Ainda não há previsões ao vivo com a hora prevista já medida pela ANA." : "Os dados ao vivo não puderam ser carregados agora."}</div>`;
+    return;
+  }
+  const h = +S.vh, T0 = utc(V.inicio), T = d3.range(V.n).map(i => new Date(+T0 + i * 36e5));
+  const codes = Object.keys(V.estacoes).filter(c => LIVE.estacoes[c]);
+  body.innerHTML = `<div class="two">${codes.map(c => `<div class="panel conf-card" id="conf-${c}"></div>`).join("")}</div>
+    <p class="note" style="margin-top:12px">Métricas acumuladas desde ${fData(utc(V.desde))}, quando a rotina começou a guardar as previsões; o gráfico mostra os últimos ${V.dias} dias. Erro = previsto − observado. A persistência repete a cota do momento da previsão. Enquanto houver poucas semanas de dados, os números mudam muito de um dia para o outro e não substituem a avaliação histórica (seção 05). Horas sem ponto são rodadas que não aconteceram ou horas sem leitura da ANA.</p>`;
+  codes.forEach(c => renderConfCard(c, V.estacoes[c], T, h));
+}
+
+function renderConfCard(c, e, T, h) {
+  const el = document.getElementById(`conf-${c}`), nome = LIVE.estacoes[c].nome;
+  const P = (e.pares || []).find(q => q.h === h) || { i: [], prev: [], obs: [], base: [] };
+  const M = e.metricas || [], mh = M.find(q => q.h === h);
+  const resumo = mh ? `Em +${h} h, o erro típico (RMSE) foi de <b>${n0(mh.rmse)} cm</b>, contra <b>${n0(mh.rmse_persist)} cm</b> da persistência${mh.skill == null ? "" : ` (skill ${n2(mh.skill)})`}, em ${n0(mh.n)} previsões.` : `Ainda sem previsões de +${h} h conferidas.`;
+  el.innerHTML = `<h3>${esc(nome)}</h3>
+    <div class="ref-line">${resumo}</div>
+    <svg id="conf-chart-${c}" role="img" aria-label="Cota observada em ${esc(nome)} nos últimos dias e cota prevista com ${h} horas de antecedência"></svg>
+    <div class="tbl-wrap"><table class="conf-tbl"><thead><tr><th>Horizonte</th><th>Previsões</th><th>Erro médio abs.</th><th>Viés</th><th>RMSE</th><th>RMSE persist.</th><th>Skill</th></tr></thead>
+      <tbody>${M.map(q => `<tr class="${q.h === h ? "sel" : ""}"><td>+${q.h} h</td><td>${n0(q.n)}</td><td>${n0(q.mae)} cm</td><td>${sgn0(q.vies)} cm</td><td>${n0(q.rmse)} cm</td><td>${n0(q.rmse_persist)} cm</td><td>${q.skill == null ? "—" : n2(q.skill)}</td></tr>`).join("")}</tbody></table></div>`;
+
+  const svg = d3.select(`#conf-chart-${c}`), box = el.getBoundingClientRect();
+  const W = Math.max(280, box.width - 4), Hh = 220, m = { t: 12, r: 10, b: 24, l: 48 };
+  svg.attr("viewBox", `0 0 ${W} ${Hh}`).attr("width", "100%").attr("height", Hh);
+  const obs = e.obs || [], pts = P.i.map((i, k) => ({ t: T[i], prev: P.prev[k], obs: P.obs[k], base: P.base[k] })).filter(d => d.t && d.prev != null);
+  const vals = obs.filter(v => v != null).concat(pts.map(d => d.prev));
+  if (!vals.length) { svg.attr("height", 0); return; }
+  const x = d3.scaleUtc().domain([T[0], T.at(-1)]).range([m.l, W - m.r]);
+  const lo = d3.min(vals), hi = d3.max(vals), pad = Math.max(30, (hi - lo) * .1);
+  const y = d3.scaleLinear().domain([Math.max(0, lo - pad), hi + pad]).nice().range([Hh - m.b, m.t]);
+  svg.append("g").attr("class", "grid").attr("transform", `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(W - m.l - m.r)).tickFormat(""));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${Hh - m.b})`).call(d3.axisBottom(x).ticks(d3.utcDay.every(W < 480 ? 2 : 1)).tickFormat(fDia));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4).tickFormat(n0)).call(g => g.select("path").remove());
+  // fio fino ligando previsto e observado em cada hora: o tamanho do erro fica visível
+  svg.append("g").selectAll("line").data(pts.filter(d => d.obs != null)).join("line")
+    .attr("x1", d => x(d.t)).attr("x2", d => x(d.t)).attr("y1", d => y(d.obs)).attr("y2", d => y(d.prev))
+    .attr("stroke", css("--silt")).attr("stroke-opacity", .45).attr("stroke-width", 1);
+  svg.append("path").attr("d", d3.line().defined(d => d != null).x((d, i) => x(T[i])).y(d => y(d))(obs))
+    .attr("fill", "none").attr("stroke", css("--ink")).attr("stroke-width", 2).attr("stroke-linejoin", "round");
+  svg.append("g").selectAll("circle").data(pts).join("circle").attr("cx", d => x(d.t)).attr("cy", d => y(d.prev)).attr("r", 3.2)
+    .attr("fill", css("--silt")).attr("stroke", css("--surface")).attr("stroke-width", 1);
+  const bis = d3.bisector(d => d.t).center;
+  svg.append("rect").attr("x", m.l).attr("y", m.t).attr("width", W - m.l - m.r).attr("height", Hh - m.t - m.b).attr("fill", "transparent")
+    .on("mousemove", ev => {
+      const t = x.invert(d3.pointer(ev)[0]);
+      const i = Math.max(0, Math.min(T.length - 1, Math.round((t - T[0]) / 36e5)));
+      const d = pts.length ? pts[bis(pts, t)] : null;
+      if (d && Math.abs(d.t - t) <= 1.5 * 36e5) {
+        const tr = new Date(+d.t - h * 36e5);
+        return showTip(ev, `<div class="t">${fHora(d.t)} (hora local)</div>${row("Observado", d.obs == null ? "—" : `${n0(d.obs)} cm`, css("--ink"))}${row(`Previsto às ${ptTime.utcFormat("%d/%m %Hh")(tr)}`, `${n0(d.prev)} cm`, css("--silt"))}${d.obs == null ? "" : row("Erro", `${sgn0(d.prev - d.obs)} cm`)}${d.obs == null || d.base == null ? "" : row("Erro da persistência", `${sgn0(d.base - d.obs)} cm`)}`);
+      }
+      showTip(ev, `<div class="t">${fHora(T[i])} (hora local)</div>${row("Observado", obs[i] == null ? "—" : `${n0(obs[i])} cm`, css("--ink"))}`);
+    }).on("mouseleave", hideTip);
+}
+
 /* ---------------------------------------------------------------- montagem */
 function renderAll() { renderAgora(); renderFacts(); renderMapa(); renderStations(); renderChips(); renderEvento(); renderSkill(); renderLong(); }
 seg("seg-mapa", [["media_anual", "Média anual"], ...EVENTOS.map(e => [e, e])], "mapa", renderMapa);
 seg("seg-est", ALVOS.map(c => [c, EST[c].nome]), "est", renderEvento);
 seg("seg-ev", EVENTOS.map(e => [e, e]), "ev", renderEvento);
 seg("seg-h", D.horizontes.map(h => [String(h), `${h} h`]), "h", renderEvento);
+seg("seg-vh", D.horizontes.map(h => [String(h), `${h} h`]), "vh", renderConferencia);
 const lv = document.getElementById("livre"); lv.checked = S.livre; lv.onchange = () => { S.livre = lv.checked; persist(); renderEvento(); };
 renderAll();
 /* ---------------------------------------------------------------- navegação: seção atual e progresso de leitura */
